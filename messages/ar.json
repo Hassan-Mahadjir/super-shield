@@ -15,5 +15,26 @@
     "importantLinks": "الروابط المهمة",
     "customerService": "خدمة العملاء",
     "back": "رجوع"
+  },
+  "Footer": {
+    "tagline": "صُنعت محليًا واختُبرت تحت الشمس — أول درع حراري صُمم خصيصًا لحرارة السعودية القاسية. انضم إلى أكثر من 300,000 عميل راضٍ يتمتعون بالبرودة والحماية.",
+    "logoTitle": "سوبر شيلد",
+    "logoAlt": "شعار سوبر شيلد",
+    "customerService": "خدمة العملاء",
+    "frequentlyAskedQuestions": "الأسئلة الشائعة",
+    "returnPolicy": "سياسة الإرجاع",
+    "InstallationGuide": "دليل التركيب",
+    "BusinessFranchises": "الأعمال والامتيازات",
+    "salesPoint": "نقاط البيع والتركيب",
+    "importantLinks": "روابط مهمة",
+    "allRightsReserved": "جميع الحقوق محفوظة",
+    "terms": "الشروط والأحكام",
+    "privacyPolicy": "سياسة الخصوصية",
+    "vatTitle": "الرقم الضريبي لضريبة القيمة المضافة",
+    "vatAlt": "ضريبة القيمة المضافة",
+
+    "termsOfUse": "شروط الاستخدام",
+    "contactUs": "اتصل بنا",
+    "followUs": "تابعنا"
   }
 }

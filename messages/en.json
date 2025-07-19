@@ -15,5 +15,26 @@
     "importantLinks": "Important Link",
     "customerService": "Customer Service",
     "back": "Back"
+  },
+  "Footer": {
+    "tagline": "Locally made, sun-tested — the first thermal shield built for Saudi Arabia’s extreme heat. Join 300,000+ satisfied customers staying cool and protected.",
+    "logoTitle": "Super Shield",
+    "logoAlt": "Super Shield Logo",
+    "customerService": "Customer Service",
+    "frequentlyAskedQuestions": "Frequently Asked Questions",
+    "returnPolicy": "Return Policy",
+    "InstallationGuide": "Installation Guide",
+    "BusinessFranchises": "Business & Franchises",
+    "salesPoint": "Sales & Installation Points",
+    "importantLinks": "Important Links",
+    "allRightsReserved": "All rights reserved",
+    "terms": "Terms and Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "vatTitle": "Value Added Tax Account Number",
+    "vatAlt": "Value Added Tax",
+
+    "termsOfUse": "Terms of Use",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us"
   }
 }
