@@ -1,6 +1,19 @@
 {
-  "HomePage": {
-    "title": "Hello world!",
-    "about": "Go to the about page"
+  "Toggle": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  },
+  "NavBar": {
+    "offers": "Offers",
+    "carHeatInsulator": "Car Heat Insulator",
+    "thermalInsulatorBuildings": "Thermal Insulator for Buildings",
+    "protection": "Protection",
+    "care": "Care",
+    "complaints": "Complaints",
+    "salesPoint": "Sales & Installation Points",
+    "importantLinks": "Important Link",
+    "customerService": "Customer Service",
+    "back": "Back"
   }
 }

@@ -14,12 +14,14 @@ interface LocaleSwitcherSelectProps {
   defaultValue: string;
   label: string;
   children: React.ReactNode;
+  width: string; // allow both Tailwind class and raw CSS value
 }
 
 export default function LocaleSwitcherSelect({
   defaultValue,
   label,
   children,
+  width,
 }: LocaleSwitcherSelectProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -56,10 +58,14 @@ export default function LocaleSwitcherSelect({
     <div>
       <label>{label}</label>
       <Select value={selectedLocale} onValueChange={handleValueChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger
+          className={width.startsWith("w-") ? width : undefined}
+          style={!width.startsWith("w-") ? { width } : undefined}
+          dir={selectedLocale === "ar" ? "rtl" : "ltr"}
+        >
           <SelectValue placeholder={label} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent dir={selectedLocale === "ar" ? "rtl" : "ltr"}>
           <SelectGroup>
             {localeOptions.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>

@@ -4,13 +4,5 @@ import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { ModeToggle } from "@/components/modeToggle";
 
 export default function HomePage() {
-  const t = useTranslations("HomePage");
-  return (
-    <div>
-      <LocaleSwitcher />
-      <ModeToggle />
-      <h1>{t("title")}</h1>
-      <Link href="/about">{t("about")}</Link>
-    </div>
-  );
+  return <div></div>;
 }

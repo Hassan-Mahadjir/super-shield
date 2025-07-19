@@ -2,9 +2,16 @@
 import { routing } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import LocaleSwitcherSelect from "./LocaleSwitcherSelect";
+import { SelectItem } from "./ui/select";
 import { useEffect, useState } from "react";
 
-export default function LocaleSwitcher() {
+interface LocaleSwitcherProps {
+  width?: string;
+}
+
+export default function LocaleSwitcher({
+  width = "w-40",
+}: LocaleSwitcherProps) {
   const locale: string = useLocale();
   const [defaultLocale, setDefaultLocale] = useState(locale);
 
@@ -15,13 +22,20 @@ export default function LocaleSwitcher() {
     }
   }, [locale]);
 
+  const languageNames: Record<string, { en: string; ar: string }> = {
+    en: { en: "English", ar: "الإنجليزية" },
+    ar: { en: "Arabic", ar: "العربية" },
+  };
+
   return (
     <div>
-      <LocaleSwitcherSelect defaultValue={defaultLocale} label="">
+      <LocaleSwitcherSelect width={width} defaultValue={defaultLocale} label="">
         {routing.locales.map((cur) => (
-          <option key={cur} value={cur}>
-            {cur}
-          </option>
+          <SelectItem key={cur} value={cur}>
+            {languageNames[cur]
+              ? languageNames[cur][locale as "en" | "ar"]
+              : cur}
+          </SelectItem>
         ))}
       </LocaleSwitcherSelect>
     </div>

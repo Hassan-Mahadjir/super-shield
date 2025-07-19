@@ -1,6 +1,19 @@
 {
-  "HomePage": {
-    "title": "مرحبا بالعالم",
-    "about": "الذهاب الى صفحة عنا"
+  "Toggle": {
+    "dark": "ليلي",
+    "light": "نهار",
+    "system": "النظام"
+  },
+  "NavBar": {
+    "offers": "العروض",
+    "carHeatInsulator": "عازل حراري للسيارات",
+    "thermalInsulatorBuildings": "عازل حراري للمباني",
+    "protection": "الحماية",
+    "care": "العناية",
+    "complaints": "الشكاوي",
+    "salesPoint": "نقاط البيع و التركيب",
+    "importantLinks": "الروابط المهمة",
+    "customerService": "خدمة العملاء",
+    "back": "رجوع"
   }
 }
