@@ -1,23 +1,25 @@
 import React from "react";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 
 const Hero = () => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("Hero");
   return (
     <div className="relative overflow-hidden">
-      {" "}
       {/* NEW WRAPPER */}
       <div className="flex flex-col xl:flex-row gap-5 max-w-screen-xl mx-auto relative z-0">
         {/* Text Content */}
         <div className="flex-1 pt-24 px-4 sm:px-8 md:px-12 lg:px-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
-            Find, book, or rent a car – quickly and easily
+            {t("title", { defaultValue: "The Ultimate Thermal Shield" })}
           </h1>
           <p className="text-base sm:text-lg text-gray-600 font-light mt-5">
-            Super Shield is a car rental service that offers a wide range of
-            vehicles to suit your needs. Whether you need a compact car for city
-            driving or a spacious SUV for a family trip, we have you covered.
-            Our user-friendly platform allows you to search, compare, and book
-            cars effortlessly.
+            {t("description", {
+              defaultValue:
+                "Super Shield is a Saudi brand specialized in providing high-quality thermal insulation rolls for vehicles, offering superior insulation properties at competitive prices.",
+            })}
           </p>
         </div>
 
@@ -28,11 +30,23 @@ const Hero = () => {
               src={"/hero.png"}
               alt="hero"
               fill
-              className="object-contain"
+              className={`object-contain${isRTL ? " rtl-flip" : ""}`}
+              style={isRTL ? { transform: "scaleX(-1)" } : {}}
             />
             <div
-              className="absolute right-[-25%] xl:right-[-35%] xl:top-[1rem] w-full h-[590px] xl:h-screen bg-repeat-round -z-10 overflow-hidden"
-              style={{ backgroundImage: "url('/hero-bg.png')" }}
+              className={`absolute ${
+                isRTL
+                  ? "left-[-25%] xl:left-[-35%]"
+                  : "right-[-25%] xl:right-[-35%]"
+              } xl:top-[1rem] w-full h-[590px] xl:h-screen bg-repeat-round -z-10 overflow-hidden`}
+              style={
+                isRTL
+                  ? {
+                      backgroundImage: "url('/hero-bg.png')",
+                      transform: "scaleX(-1)",
+                    }
+                  : { backgroundImage: "url('/hero-bg.png')" }
+              }
             />
           </div>
         </div>

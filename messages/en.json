@@ -36,5 +36,12 @@
     "termsOfUse": "Terms of Use",
     "contactUs": "Contact Us",
     "followUs": "Follow Us"
+  },
+
+  "Hero": {
+    "title": "The Ultimate Thermal Shield",
+    "subtitle": "Engineered for Saudi Arabia’s Extreme Heat",
+    "description": "Super Shield is a Saudi brand specialized in providing high-quality thermal insulation rolls for vehicles, offering superior insulation properties at competitive prices.",
+    "ctaButton": "Learn More"
   }
 }
