@@ -9,7 +9,7 @@ import {
 } from "./ui/sheet";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { ModeToggle } from "./modeToggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 
@@ -18,6 +18,8 @@ const sheetOnlyItems = ["Sheet Item 1", "Sheet Item 2", "Sheet Item 3"];
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [nestedSheet, setNestedSheet] = useState<string | null>(null); // Track which nested sheet is open
+  const [scrolledDown, setScrolledDown] = useState(false); // Track scroll direction
+  const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
   const locale = useLocale();
   const isRTL = locale === "ar";
 
@@ -58,8 +60,27 @@ export default function Navbar() {
     // Add more items as needed
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 10) {
+        setScrolledDown(true); // Animate up on scroll down
+      } else {
+        setScrolledDown(false); // Animate back on scroll up
+      }
+      setLastScrollY(currentScrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <nav className="w-full border-b bg-background px-4 py-2 flex items-center justify-between">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 border-b bg-background px-4 py-2 flex items-center justify-between transition-transform duration-300 ${
+        scrolledDown ? "-translate-y-2" : "translate-y-0"
+      }`}
+      style={{ height: "72px" }}
+    >
       {/* left: Menu (desktop) */}
       <div className="hidden md:flex gap-4">
         {menuItems.slice(0, 3).map((item) => (
@@ -69,7 +90,7 @@ export default function Navbar() {
         ))}
       </div>
       {/* center: Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 mt-1">
         <Image
           src={"/super.png"}
           alt="super shield logo"

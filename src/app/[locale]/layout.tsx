@@ -39,7 +39,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
-      <body className="relative">
+      <body className="relative pt-[72px]">
         <NextIntlClientProvider>
           {" "}
           <ThemeProvider
