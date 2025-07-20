@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <div className="relative overflow-hidden">
       {/* NEW WRAPPER */}
-      <div className="flex flex-col xl:flex-row gap-5 max-w-screen-xl mx-auto relative z-0">
+      <div className="flex flex-col xl:flex-row gap-5 mx-auto relative z-0">
         {/* Text Content */}
         <div className="flex-1 pt-24 px-4 sm:px-8 md:px-12 lg:px-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="flex justify-end items-end w-full xl:flex-[1.5] h-[400px] sm:h-[500px] xl:h-screen">
           <div className="relative w-full max-w-[90%] h-full z-0">
             <Image
-              src={"/hero.png"}
+              src={"/hero-red.png"}
               alt="hero"
               fill
               className={`object-contain${isRTL ? " rtl-flip" : ""}`}
@@ -42,10 +42,10 @@ const Hero = () => {
               style={
                 isRTL
                   ? {
-                      backgroundImage: "url('/hero-bg.png')",
+                      backgroundImage: "url('/hero-red-bg.png')",
                       transform: "scaleX(-1)",
                     }
-                  : { backgroundImage: "url('/hero-bg.png')" }
+                  : { backgroundImage: "url('/hero-red-bg.png')" }
               }
             />
           </div>

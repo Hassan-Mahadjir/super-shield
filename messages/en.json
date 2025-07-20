@@ -32,10 +32,14 @@
     "privacyPolicy": "Privacy Policy",
     "vatTitle": "Value Added Tax Account Number",
     "vatAlt": "Value Added Tax",
+    "followUs": "Follow us on social media",
+    "instagram": "Instagram",
+    "x": "X",
+    "tiktok": "TikTok",
+    "snapchat": "Snapchat",
 
     "termsOfUse": "Terms of Use",
-    "contactUs": "Contact Us",
-    "followUs": "Follow Us"
+    "contactUs": "Contact Us"
   },
 
   "Hero": {

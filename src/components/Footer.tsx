@@ -1,8 +1,15 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
+
 import { FaWhatsapp } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
+import { FaSnapchatGhost } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaTiktok } from "react-icons/fa6";
+
 import { Button } from "./ui/button";
+import SocialIcons from "./SocialIcons";
 
 interface MenuItem {
   title: string;
@@ -117,8 +124,39 @@ const Footer = ({
 
   return (
     <section className="pt-10">
-      <footer className="bg-gray-800 text-white py-6">
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-4">
+      <footer className="py-6">
+        <div className="mb-6 text-center flex flex-row justify-center gap-4">
+          <p>{t("followUs")}</p>
+          <SocialIcons
+            icons={[
+              {
+                href: "https://instagram.com",
+                label: t("instagram", { defaultValue: "Instagram" }),
+                icon: <FaInstagram className="!w-6 !h-6" />,
+                hoverClass: "hover:text-pink-500",
+              },
+              {
+                href: "https://snapchat.com",
+                label: t("snapchat", { defaultValue: "Snapchat" }),
+                icon: <FaSnapchatGhost className="!w-6 !h-6" />,
+                hoverClass: "hover:text-yellow-400",
+              },
+              {
+                href: "https://twitter.com",
+                label: t("x", { defaultValue: "X" }),
+                icon: <FaXTwitter className="!w-6 !h-6" />,
+                hoverClass: "hover:text-blue-400",
+              },
+              {
+                href: "https://tiktok.com",
+                label: t("tiktok", { defaultValue: "TikTok" }),
+                icon: <FaTiktok className="!w-6 !h-6" />,
+                hoverClass: "hover:text-black",
+              },
+            ]}
+          />
+        </div>
+        <div className="border-t pt-8 grid grid-cols-1 gap-5 lg:grid-cols-5 mx-auto px-4 sm:px-6 lg:px-4">
           <div
             className={`col-span-1 ${
               isRTL ? "ml-8" : "mr-8"
@@ -176,7 +214,7 @@ const Footer = ({
             </div>
           </div>
         </div>
-        <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-4">
+        <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center  mx-auto px-4 sm:px-6 lg:px-4">
           <p>{finalCopyright}</p>
           <ul className="flex gap-4">
             {finalBottomLinks.map((link, linkIdx) => (
