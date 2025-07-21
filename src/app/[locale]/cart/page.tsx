@@ -9,8 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "@/store/cart/cart";
 import { Separator } from "@/components/ui/separator";
+import { useTranslations } from "next-intl";
 
 const CartPage: React.FC = () => {
+  const t = useTranslations("cart");
   const cart = useCart((state) => state.cart);
   const removeFromCart = useCart((state) => state.removeFromCart);
   const increaseQuantity = useCart((state) => state.increaseQuantity);
@@ -26,7 +28,10 @@ const CartPage: React.FC = () => {
 
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">سلة الشراء ({totalItems} قطعة)</h1>
+        <h1 className="text-2xl font-bold">
+          {" "}
+          {t("title")} {totalItems} {t("item")}
+        </h1>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -58,7 +63,7 @@ const CartPage: React.FC = () => {
                         </div>
                         <div className="text-left">
                           <p className="font-semibold">
-                            {item.price.toFixed(2)} د.ل
+                            {item.price.toFixed(2)} R.S
                           </p>
                         </div>
                       </div>
@@ -102,29 +107,34 @@ const CartPage: React.FC = () => {
         {/* Order Summary */}
         <div className="lg:col-span-1">
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">ملخص الطلب</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("orderSummary")}</h2>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span>{totalItems} قطعة</span>
-                <span>{totalPrice.toFixed(2)} د.ل</span>
+                <span>
+                  {totalItems} {t("item")}
+                </span>
+                <span>{totalPrice.toFixed(2)} R.S</span>
               </div>
               <div className="flex justify-between">
-                <span>تخفيض</span>
-                <span>0 د.ل</span>
+                <span>{t("discount")}</span>
+                <span>0 R.S</span>
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">
-                <span>الإجمالي</span>
-                <span>{totalPrice.toFixed(2)} د.ل</span>
+                <span>{t("total")}</span>
+                <span>{totalPrice.toFixed(2)} R.S</span>
               </div>
               <div className="pt-4">
-                <Input
-                  placeholder="أدخل كوبون التخفيض"
+                {/* <Input
+                  placeholder="Enter discount code"
                   className="mb-4 text-right"
-                />
+                /> */}
                 <Link href="/cart/checkout">
-                  <Button className="w-full bg-accent" size="lg">
-                    إتمام الطلب
+                  <Button
+                    className="w-full hover:bg-red-800 transition duration-300 hover:text-white"
+                    size="lg"
+                  >
+                    {t("completeOrder")}
                   </Button>
                 </Link>
               </div>

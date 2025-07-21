@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ServiceCard from "./Service-Card";
+import { useLocale } from "next-intl";
 
 interface CarouselProps {
   slides: {
@@ -11,6 +12,9 @@ interface CarouselProps {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+
   const startIndex =
     slides.length === 1 ? 0 : Math.floor((slides.length - 1) / 2);
 
@@ -20,7 +24,11 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
     <div className="overflow-hidden w-full py-4">
       <div
         className="flex flex-row items-center gap-5 perspective-1000 justify-center animate-scroll-x"
-        style={{ animation: "scroll-x 35s linear infinite" }}
+        style={{
+          animation: `${
+            isRTL ? "scroll-x-rtl" : "scroll-x-ltr"
+          } 35s linear infinite`,
+        }}
       >
         {slides.map((slide, index) => {
           const isActive = index === currentPage;
@@ -42,9 +50,13 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
         })}
       </div>
       <style>{`
-        @keyframes scroll-x {
+        @keyframes scroll-x-ltr {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100%); }
+        }
+        @keyframes scroll-x-rtl {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
         }
       `}</style>
     </div>

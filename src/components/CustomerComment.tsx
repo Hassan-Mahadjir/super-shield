@@ -1,5 +1,6 @@
 import React from "react";
 import Carousel from "./Cards-Carousel";
+import { useTranslations } from "next-intl";
 
 const comments = [
   {
@@ -22,9 +23,11 @@ const comments = [
 ];
 
 const CustomerComment = () => {
+  const t = useTranslations("common");
+
   return (
     <div className="mt-5 mx-5 my-10">
-      <p className="text-center my-5 font-bold text-3xl">Customer Feedback</p>
+      <p className="text-center my-5 font-bold text-3xl">{t("customers")}</p>
       <Carousel slides={comments} />
     </div>
   );

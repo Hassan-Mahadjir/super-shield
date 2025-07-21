@@ -8,44 +8,62 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
+import { useCart } from "@/store/cart/cart";
 
-const Offers = () => {
+const Offer = () => {
   const { theme } = useTheme();
+  const { addToCart } = useCart();
+  const t = useTranslations("common");
 
+  type Product = {
+    id: number;
+    name: string;
+    price: number;
+    description: string;
+    image: string;
+    oldPrice: string;
+  };
+
+  const handleAddtoCart = (product: Product) => {
+    addToCart(
+      product.id,
+      product.price,
+      product.name,
+      product.image,
+      product.description,
+      1
+    );
+  };
   const locale = useLocale();
   const isRTL = locale === "ar";
   return (
     <div className="mt-5 mx-5">
-      <p className="text-center my-5 font-bold text-2xl">Offers</p>
+      <p className="text-center my-5 font-bold text-2xl">{t("offer")}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center justify-items-center">
         {[
           {
+            id: 1,
             name: "Nano Ceramic - Suitable for all cars",
             description: "Protects your car from heat and UV rays",
             image: "/hero.png",
             oldPrice: "500 $",
-            price: "100 $",
+            price: 100,
           },
           {
+            id: 2,
             name: "Premium Silver Insulator",
             description: "Blocks 99% of UV, keeps car cool",
             image: "/hero-blue.png",
             oldPrice: "600 $",
-            price: "150 $",
+            price: 150,
           },
           {
+            id: 3,
             name: "Red Shield Pro",
             description: "Maximum heat protection for luxury cars",
             image: "/hero-red.png",
             oldPrice: "700 $",
-            price: "200 $",
-          },
-          {
-            name: "Red Shield Pro",
-            description: "Maximum heat protection for luxury cars",
-            image: "/hero-red.png",
-            oldPrice: "700 $",
-            price: "200 $",
+            price: 200,
           },
         ].map((product, idx) => (
           <Card
@@ -69,7 +87,7 @@ const Offers = () => {
                     isRTL ? "right-2" : "left-2"
                   } bg-white/10 backdrop-blur-md border shadow-md rounded-md text-xs px-3 py-1 rounded z-10`}
                 >
-                  Sell more than: 1000
+                  {t("sellMore")} 1000
                 </span>
               </CardHeader>
               <CardContent className="p-4">
@@ -92,9 +110,12 @@ const Offers = () => {
                   </div>
                 </div>
                 <div>
-                  <Button className="w-full hover:bg-red-800 transition duration-300 hover:text-white">
+                  <Button
+                    className="w-full hover:bg-red-800 transition duration-300 hover:text-white"
+                    onClick={() => handleAddtoCart(product)}
+                  >
                     <IoIosAddCircleOutline className="!w-6 !h-6" />
-                    Add to cart
+                    {t("addToCart", { defaultValue: "Add to Cart" })}
                   </Button>
                 </div>
               </CardContent>
@@ -106,4 +127,4 @@ const Offers = () => {
   );
 };
 
-export default Offers;
+export default Offer;

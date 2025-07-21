@@ -13,6 +13,7 @@ import { useCart } from "@/store/cart/cart";
 const HeatInsulator = () => {
   const { theme } = useTheme();
   const { addToCart } = useCart();
+  const t = useTranslations("common");
 
   type Product = {
     id: number;
@@ -37,7 +38,9 @@ const HeatInsulator = () => {
   const isRTL = locale === "ar";
   return (
     <div className="mt-5 mx-5">
-      <p className="text-center my-5 font-bold text-2xl">Heat Insulators</p>
+      <p className="text-center my-5 font-bold text-2xl">
+        {t("heatInsulator")}
+      </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center justify-items-center">
         {[
           {
@@ -86,7 +89,7 @@ const HeatInsulator = () => {
                     isRTL ? "right-2" : "left-2"
                   } bg-white/10 backdrop-blur-md border shadow-md rounded-md text-xs px-3 py-1 rounded z-10`}
                 >
-                  Sell more than: 1000
+                  {t("sellMore")} 1000
                 </span>
               </CardHeader>
               <CardContent className="p-4">
@@ -114,7 +117,7 @@ const HeatInsulator = () => {
                     onClick={() => handleAddtoCart(product)}
                   >
                     <IoIosAddCircleOutline className="!w-6 !h-6" />
-                    Add to cart
+                    {t("addToCart", { defaultValue: "Add to Cart" })}
                   </Button>
                 </div>
               </CardContent>

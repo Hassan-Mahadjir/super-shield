@@ -84,12 +84,14 @@ export default function Navbar() {
     >
       {/* left: Menu (desktop) */}
       <div className="hidden md:flex gap-4">
-        {menuItems.slice(0, 3).map((item) => (
+        {/* {menuItems.slice(0, 3).map((item) => (
           <Button key={item} variant="ghost" size="sm">
             {item}
           </Button>
-        ))}
-        <CartButton />
+        ))} */}
+        <div className="mx-4">
+          <CartButton />
+        </div>
       </div>
       {/* center: Logo */}
       <div className="flex items-center gap-2 mt-1">

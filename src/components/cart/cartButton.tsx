@@ -5,6 +5,7 @@ import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/cart/cart";
+import { useTheme } from "next-themes";
 
 const CartButton = () => {
   const cart = useCart((state) => state.cart);
@@ -12,6 +13,7 @@ const CartButton = () => {
   const [animate, setAnimate] = useState(false);
   const prevTotalItems = useRef(totalItems);
   const isInitial = useRef(true);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (isInitial.current) {
@@ -39,10 +41,20 @@ const CartButton = () => {
           className="relative"
         >
           <motion.div
-            animate={animate ? { color: ["#000", "#ff0000", "#000"] } : {}}
+            animate={
+              animate
+                ? {
+                    color: [
+                      theme === "dark" ? "#fff" : "#000",
+                      "#ff0000",
+                      theme === "dark" ? "#fff" : "#000",
+                    ],
+                  }
+                : {}
+            }
             transition={{ duration: 0.3 }}
           >
-            <ShoppingCart className="h-5 w-5" />
+            <ShoppingCart className="!h-8 !w-8" />
           </motion.div>
 
           <span className="sr-only">Cart</span>

@@ -1,12 +1,12 @@
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
-import { useTranslations } from "use-intl";
 import { HiBadgeCheck } from "react-icons/hi";
 
 const Us = () => {
   const locale = useLocale();
   const isRTL = locale === "ar";
+  const t = useTranslations("Us");
 
   return (
     <div className="relative overflow-hidden">
@@ -27,31 +27,28 @@ const Us = () => {
         {/* Text Content */}
         <div className="flex-1 pt-24 px-4 sm:px-8 md:px-12 lg:px-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
-            Why choose Super Shield?
+            {t("title", { defaultValue: "Why ChooseUs?" })}
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
             {[
               {
-                title: "High quality and trustworthy",
-                description:
-                  "Unsatisfied with the product, get instance refund",
+                title: t("quality"),
+                description: t("qualityDescription"),
                 icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
               {
-                title: "Easy Installation",
-                description: "Install it wherever you are with ease",
+                title: t("installation"),
+                description: t("installationDescription"),
                 icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
               {
-                title: "Superior Heat Protection",
-                description:
-                  "Blocks up to 85% of heat, keeping your vehicle cooler in Saudi Arabia's extreme climate",
+                title: t("protection"),
+                description: t("protectionDescription"),
                 icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
               {
-                title: "Stylish & Long-Lasting",
-                description:
-                  "Modern design with durable materials that last — no peeling, no fading",
+                title: t("durability"),
+                description: t("durabilityDescription"),
                 icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
             ].map((feature, idx) => (

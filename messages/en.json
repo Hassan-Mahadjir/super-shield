@@ -47,5 +47,34 @@
     "subtitle": "Engineered for Saudi Arabia’s Extreme Heat",
     "description": "Super Shield is a Saudi brand specialized in providing high-quality thermal insulation rolls for vehicles, offering superior insulation properties at competitive prices.",
     "ctaButton": "Learn More"
+  },
+
+  "common": {
+    "heatInsulator": "Heat Insulators",
+    "offer": "Offers",
+    "agencies": "Our products are approved for all car agencies in the Kingdom of Saudi Arabia",
+    "customers": "Customers Reviews",
+    "sellMore": "Sold more than ",
+    "addToCart": "Add to Cart"
+  },
+  "Us": {
+    "title": "Why choose Super Shield?",
+    "quality": "High quality and trustworthy",
+    "qualityDescription": "Unsatisfied with the product? get instance refund",
+    "installation": "Easy Installation",
+    "installationDescription": "Install it wherever you are with ease",
+    "protection": "Superior Heat Protection",
+    "protectionDescription": "Blocks up to 85% of heat, keeping your vehicle cooler in Saudi Arabia's extreme climate",
+    "durability": "Stylish & Long-Lasting",
+    "durabilityDescription": "Modern design with durable materials that last — no peeling, no fading"
+  },
+  "cart": {
+    "title": "Cart",
+    "item": "item(s)",
+    "total": "Total",
+    "discount": " Discount",
+    "applyDiscount": "Apply Discount Code",
+    "orderSummary": "Order Summary",
+    "completeOrder": "Complete Order"
   }
 }
