@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsappButton from "@/components/cart/whatsappButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,6 +51,7 @@ export default async function LocaleLayout({
           >
             <Navbar />
             {children}
+            <WhatsappButton />
             <Footer />
           </ThemeProvider>
         </NextIntlClientProvider>

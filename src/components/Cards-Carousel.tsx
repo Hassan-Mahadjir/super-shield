@@ -20,7 +20,7 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
     <div className="overflow-hidden w-full py-4">
       <div
         className="flex flex-row items-center gap-5 perspective-1000 justify-center animate-scroll-x"
-        style={{ animation: "scroll-x 20s linear infinite" }}
+        style={{ animation: "scroll-x 35s linear infinite" }}
       >
         {slides.map((slide, index) => {
           const isActive = index === currentPage;

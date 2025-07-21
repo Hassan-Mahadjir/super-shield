@@ -12,6 +12,7 @@ import { ModeToggle } from "./modeToggle";
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import CartButton from "./cart/cartButton";
 
 const sheetOnlyItems = ["Sheet Item 1", "Sheet Item 2", "Sheet Item 3"];
 
@@ -88,6 +89,7 @@ export default function Navbar() {
             {item}
           </Button>
         ))}
+        <CartButton />
       </div>
       {/* center: Logo */}
       <div className="flex items-center gap-2 mt-1">
