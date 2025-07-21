@@ -15,7 +15,7 @@ const Hero = () => {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
             {t("title", { defaultValue: "The Ultimate Thermal Shield" })}
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 font-light mt-5">
+          <p className="text-base sm:text-lg font-light mt-5">
             {t("description", {
               defaultValue:
                 "Super Shield is a Saudi brand specialized in providing high-quality thermal insulation rolls for vehicles, offering superior insulation properties at competitive prices.",
