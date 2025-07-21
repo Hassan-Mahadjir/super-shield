@@ -7,6 +7,7 @@ import HeatInsulator from "@/components/HeatInsulator";
 import Offers from "@/components/Offers";
 import Us from "@/components/Us";
 import Agencies from "@/components/Agencies";
+import CustomerComment from "@/components/CustomerComment";
 
 export default function HomePage() {
   return (
@@ -16,6 +17,7 @@ export default function HomePage() {
       <Offers />
       <Us />
       <Agencies />
+      <CustomerComment />
     </div>
   );
 }
