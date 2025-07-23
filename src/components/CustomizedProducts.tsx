@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -23,6 +23,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useCart } from "@/store/cart/cart";
 
 const formSchema = z.object({
   front: z.string().min(1, { message: "Select a front window option." }),
@@ -74,6 +75,9 @@ const carData = {
   },
 };
 
+const BACK_WINDOW_EXTRA_COST = 200; // Example extra cost for back window
+const BASE_PRICE = 1000; // Example base price for the product
+
 const CustomizedProducts = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,8 +91,74 @@ const CustomizedProducts = () => {
     },
   });
 
+  const addToCart = useCart((state) => state.addToCart);
+
+  // State for extra cost toggle
+  const [backWindowExtra, setBackWindowExtra] = useState(true);
+
+  // State for custom model/type
+  const [customMake, setCustomMake] = useState("");
+  const [customModel, setCustomModel] = useState("");
+  const [customType, setCustomType] = useState("");
+
+  // Watch form values
+  const watchFields = form.watch();
+  const selectedMake = form.watch("carMake");
+  const selectedModel = form.watch("carModel");
+  const selectedType = form.watch("carType");
+
+  // Filtered options
+  const filteredModels =
+    selectedMake &&
+    (carData as Record<string, { models: string[]; types: string[] }>)[
+      selectedMake
+    ]
+      ? (carData as Record<string, { models: string[]; types: string[] }>)[
+          selectedMake
+        ].models
+      : [];
+  const filteredTypes =
+    selectedMake &&
+    (carData as Record<string, { models: string[]; types: string[] }>)[
+      selectedMake
+    ]
+      ? (carData as Record<string, { models: string[]; types: string[] }>)[
+          selectedMake
+        ].types
+      : [];
+
+  // Calculate price
+  const { totalPrice, extraCost } = useMemo(() => {
+    let price = BASE_PRICE;
+    let extra = 0;
+    // If back window is selected and extra is enabled, add extra cost
+    if (watchFields.back && backWindowExtra) {
+      extra += BACK_WINDOW_EXTRA_COST;
+    }
+    // You can add more logic for other options here
+    price += extra;
+    return { totalPrice: price, extraCost: extra };
+  }, [watchFields.back, backWindowExtra]);
+
+  // Handle submit
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    // Compose product name/description
+    const make = values.carMake === "other" ? customMake : values.carMake;
+    const model = values.carModel === "other" ? customModel : values.carModel;
+    const type = values.carType === "other" ? customType : values.carType;
+    const name = `Custom Tint: ${make} ${model} (${type})`;
+    const description =
+      `Front: ${values.front}, Back: ${values.back}, Sides: ${values.sides}` +
+      (backWindowExtra ? " + Back Window Extra" : "");
+    addToCart(
+      Date.now(), // id (unique)
+      totalPrice,
+      name,
+      "/hero.png", // image (placeholder)
+      description,
+      1 // quantity
+    );
+    // Optionally reset form or show a message
   };
 
   return (
@@ -97,6 +167,40 @@ const CustomizedProducts = () => {
         Options
       </Button>
       <div className="flex flex-col mt-4">
+        {/* Price Display */}
+        <div className="mb-4">
+          <span className="font-semibold">Total Price: </span>
+          <span className="text-lg">{totalPrice} R.S</span>
+          {extraCost > 0 && (
+            <div className="text-sm text-red-600 flex items-center gap-2 mt-1">
+              <span>+ Back Window Extra: {BACK_WINDOW_EXTRA_COST} R.S</span>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="px-2 py-0 h-6 text-xs"
+                onClick={() => setBackWindowExtra(false)}
+                disabled={!backWindowExtra}
+              >
+                Remove Extra
+              </Button>
+            </div>
+          )}
+          {!backWindowExtra && watchFields.back && (
+            <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
+              <span>Back Window Extra removed.</span>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="px-2 py-0 h-6 text-xs"
+                onClick={() => setBackWindowExtra(true)}
+              >
+                Add Again
+              </Button>
+            </div>
+          )}
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* Tint Options */}
@@ -140,7 +244,15 @@ const CustomizedProducts = () => {
                   <FormLabel className="w-1/6">Car Make</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        // Reset model/type if make changes
+                        form.setValue("carModel", "");
+                        form.setValue("carType", "");
+                        setCustomMake("");
+                        setCustomModel("");
+                        setCustomType("");
+                      }}
                       defaultValue={field.value}
                     >
                       <SelectTrigger className="w-3/4">
@@ -152,9 +264,18 @@ const CustomizedProducts = () => {
                             {make}
                           </SelectItem>
                         ))}
+                        <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
+                  {selectedMake === "other" && (
+                    <Input
+                      className="w-3/4"
+                      placeholder="Enter car make"
+                      value={customMake}
+                      onChange={(e) => setCustomMake(e.target.value)}
+                    />
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -169,26 +290,34 @@ const CustomizedProducts = () => {
                   <FormLabel className="w-1/6">Car Model</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== "other") setCustomModel("");
+                      }}
                       defaultValue={field.value}
+                      // Note: For full search, consider using react-select
                     >
                       <SelectTrigger className="w-3/4">
                         <SelectValue placeholder="Select car model" />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(carData).map(([make, data]) => (
-                          <SelectGroup key={make}>
-                            <SelectLabel>{make}</SelectLabel>
-                            {data.models.map((model) => (
-                              <SelectItem key={model} value={model}>
-                                {model}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
+                        {filteredModels.map((model: string) => (
+                          <SelectItem key={model} value={model}>
+                            {model}
+                          </SelectItem>
                         ))}
+                        <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
+                  {selectedModel === "other" && (
+                    <Input
+                      className="w-3/4"
+                      placeholder="Enter car model"
+                      value={customModel}
+                      onChange={(e) => setCustomModel(e.target.value)}
+                    />
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -203,37 +332,45 @@ const CustomizedProducts = () => {
                   <FormLabel className="w-1/6">Car Type</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== "other") setCustomType("");
+                      }}
                       defaultValue={field.value}
+                      // Note: For full search, consider using react-select
                     >
                       <SelectTrigger className="w-3/4">
                         <SelectValue placeholder="Select car type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(carData).map(([make, data]) => (
-                          <SelectGroup key={make}>
-                            <SelectLabel>{make}</SelectLabel>
-                            {data.types.map((type) => (
-                              <SelectItem
-                                key={`${make}-${type}`}
-                                value={`${make}-${type}`}
-                              >
-                                {type}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
+                        {filteredTypes.map((type: string) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
                         ))}
+                        <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
+                  {selectedType === "other" && (
+                    <Input
+                      className="w-3/4"
+                      placeholder="Enter car type"
+                      value={customType}
+                      onChange={(e) => setCustomType(e.target.value)}
+                    />
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit">Submit</Button>
+            <Button type="submit" className="w-full">
+              Add to Cart ({totalPrice} R.S)
+            </Button>
           </form>
         </Form>
+        {/* Note: For a fully searchable and free-text select, consider using react-select or similar library. */}
       </div>
     </div>
   );
