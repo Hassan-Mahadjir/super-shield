@@ -8,7 +8,9 @@ const page = () => {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* photo gallary */}
         <div className="lg:col-span-1 space-y-4">
-          <ProductImages />
+          <div className="lg:sticky top-24">
+            <ProductImages />
+          </div>
         </div>
         {/* product discription */}
         <div className="lg:col-span-2 space-y-4">
