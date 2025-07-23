@@ -10,7 +10,7 @@ interface LocaleSwitcherProps {
 }
 
 export default function LocaleSwitcher({
-  width = "w-40",
+  width = "w-32",
 }: LocaleSwitcherProps) {
   const locale: string = useLocale();
   const [defaultLocale, setDefaultLocale] = useState(locale);

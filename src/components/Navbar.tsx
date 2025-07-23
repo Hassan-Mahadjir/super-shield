@@ -58,23 +58,7 @@ export default function Navbar() {
         </Button>
       </>
     ),
-    // Add more items as needed
   };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 10) {
-        setScrolledDown(true); // Animate up on scroll down
-      } else {
-        setScrolledDown(false); // Animate back on scroll up
-      }
-      setLastScrollY(currentScrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 border-b bg-background px-4 py-2 flex items-center justify-between transition-transform duration-300 ${
@@ -84,29 +68,31 @@ export default function Navbar() {
     >
       {/* left: Menu (desktop) */}
       <div className="hidden md:flex gap-4">
-        {/* {menuItems.slice(0, 3).map((item) => (
-          <Button key={item} variant="ghost" size="sm">
-            {item}
-          </Button>
-        ))} */}
         <div className="mx-4">
           <CartButton />
         </div>
       </div>
       {/* center: Logo */}
-      <div className="flex items-center gap-2 mt-1">
+      <div className="flex items-center gap-2 my-4">
         <Image
           src={"/super.png"}
           alt="super shield logo"
-          width={80}
-          height={80}
+          width={90}
+          height={90}
         />
       </div>
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2">
-        <LocaleSwitcher />
-        <ModeToggle />
+        {/* Show LocaleSwitcher only on md and up */}
+        <div className="hidden md:block">
+          <LocaleSwitcher />
+        </div>
+        {/* Show CartButton only on mobile (block on small, hidden on md+) */}
+        <div className="block md:hidden">
+          <CartButton />
+        </div>
+        {/* <ModeToggle /> */}
         {/* Sheet trigger always visible */}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
@@ -159,6 +145,7 @@ export default function Navbar() {
                 ))}
               </div>
               <div className="p-4 border-t flex gap-2">
+                {/* Always show LocaleSwitcher in sheet */}
                 <LocaleSwitcher width="w-72" />
                 <ModeToggle />
               </div>
