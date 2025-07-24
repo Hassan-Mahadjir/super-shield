@@ -75,7 +75,10 @@
     "discount": " Discount",
     "applyDiscount": "Apply Discount Code",
     "orderSummary": "Order Summary",
-    "completeOrder": "Complete Order"
+    "completeOrder": "Complete Order",
+    "applying": " Applying",
+    "apply": "Apply",
+    "couponPlaceholder": "Enter your coupon code"
   },
   "form": {
     "carMake": "Car Make",
@@ -116,5 +119,10 @@
     "darkShadow": "01 Light with Shadow Touch (According to Rules)",
     "mediumShadow": "02 Medium Shadow (According to Rules)",
     "dark": "03 Dark Tint"
+  },
+  "error": {
+    "invalid": "Invalid or inactive coupon",
+    "expired": "Coupon has expired",
+    "limit": "Coupon usage limit reached"
   }
 }

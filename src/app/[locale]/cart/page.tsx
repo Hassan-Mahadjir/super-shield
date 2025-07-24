@@ -10,6 +10,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "@/store/cart/cart";
 import { supabase } from "@/lib/supabseClient";
 import { Separator } from "@/components/ui/separator";
+import { validateCoupon } from "@/hook/validateCoupon";
 import { useTranslations } from "next-intl";
 import Currency from "@/components/Currency";
 import { useTheme } from "next-themes";
@@ -21,11 +22,22 @@ const CartPage: React.FC = () => {
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
   const theme = useTheme();
-  const isDark = theme.theme === "dark";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const isDark = mounted && theme.theme === "dark";
   const currencyFill = isDark ? "white" : "black";
 
   // State to hold merged cart items with product info
   const [cartProducts, setCartProducts] = useState<any[]>([]);
+
+  // Coupon state(s)
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [isPercent, setIsPercent] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
 
   // Fetch product info for cart items if missing
   useEffect(() => {
@@ -67,17 +79,53 @@ const CartPage: React.FC = () => {
     fetchProducts();
   }, [cart]);
 
+  // Coupon apply handler
+  const handleApplyCoupon = async () => {
+    setCouponLoading(true);
+    setCouponMessage("");
+    const result = await validateCoupon(couponCode);
+    if (result.valid) {
+      setDiscount(result.discount);
+      setIsPercent(result.isPercent);
+      setCouponMessage(result.message);
+      // Increment coupon usage count in Supabase
+      const { data: couponData, error: couponError } = await supabase
+        .from("coupon")
+        .select("used_count")
+        .eq("code", couponCode)
+        .single();
+      if (!couponError && couponData) {
+        const newCount = (couponData.used_count || 0) + 1;
+        await supabase
+          .from("coupon")
+          .update({ used_count: newCount })
+          .eq("code", couponCode);
+      }
+    } else {
+      setDiscount(0);
+      setIsPercent(false);
+      setCouponMessage(result.message);
+    }
+    setCouponLoading(false);
+  };
+
   // Totals
   const totalItems = cartProducts.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = cartProducts.reduce(
     (sum, i) => sum + i.price * i.quantity,
     0
   );
+  // Discounted total
+  const discountAmount = isPercent ? (totalPrice * discount) / 100 : discount;
+  const finalTotal = Math.max(totalPrice - discountAmount, 0);
 
+  if (!mounted) {
+    // Optionally, you can return a skeleton or null while mounting
+    return null;
+  }
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
       <div className="h-[15vh]" />
-
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
@@ -85,7 +133,6 @@ const CartPage: React.FC = () => {
           {t("title")} {totalItems} {t("item")}
         </h1>
       </div>
-
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Items List */}
         <div className="lg:col-span-2 space-y-4">
@@ -105,7 +152,6 @@ const CartPage: React.FC = () => {
                       />
                     </Link>
                   </div>
-
                   <div className="flex-1 flex flex-col justify-between">
                     {/* Name / Color / Price / Size */}
                     <div>
@@ -126,7 +172,6 @@ const CartPage: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
                     {/* Quantity Controls & Remove */}
                     <div className="flex justify-between items-center mt-4">
                       <div className="flex items-center gap-2">
@@ -161,7 +206,6 @@ const CartPage: React.FC = () => {
             );
           })}
         </div>
-
         {/* Order Summary */}
         <div className="lg:col-span-1">
           <Card className="p-6">
@@ -178,22 +222,58 @@ const CartPage: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span>{t("discount")}</span>
-                <Currency currencyFill={currencyFill} />
+                <div className="flex">
+                  <span>
+                    {discount > 0
+                      ? isPercent
+                        ? `-${discount}%`
+                        : `-${discountAmount.toFixed(2)}`
+                      : 0}
+                  </span>
+                  <Currency currencyFill={currencyFill} />
+                </div>
+              </div>
+              {/* Coupon Input */}
+              <div className="flex flex-col gap-2 mb-2">
+                <div className="flex gap-2">
+                  <Input
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    placeholder={t("couponPlaceholder") || "Enter coupon code"}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleApplyCoupon}
+                    disabled={couponLoading || !couponCode}
+                    variant="outline"
+                    className={
+                      couponCode ? "hover:border hover:border-red-500" : ""
+                    }
+                  >
+                    {couponLoading
+                      ? t("applying") || "Applying..."
+                      : t("apply") || "Apply"}
+                  </Button>
+                </div>
+                {couponMessage && (
+                  <span
+                    className={`text-xs ${
+                      discount > 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {couponMessage}
+                  </span>
+                )}
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">
                 <span>{t("total")}</span>
                 <div className="flex">
-                  {" "}
-                  <span>{totalPrice.toFixed(2)}</span>
+                  <span>{finalTotal.toFixed(2)}</span>
                   <Currency currencyFill={currencyFill} />
                 </div>
               </div>
               <div className="pt-4">
-                {/* <Input
-                  placeholder="Enter discount code"
-                  className="mb-4 text-right"
-                /> */}
                 <Link href="/cart/checkout">
                   <Button
                     className="w-full hover:bg-red-800 transition duration-300 hover:text-white"
