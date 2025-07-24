@@ -11,6 +11,8 @@ import { useCart } from "@/store/cart/cart";
 import { supabase } from "@/lib/supabseClient";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
+import Currency from "@/components/Currency";
+import { useTheme } from "next-themes";
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
@@ -18,6 +20,9 @@ const CartPage: React.FC = () => {
   const removeFromCart = useCart((state) => state.removeFromCart);
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
+  const theme = useTheme();
+  const isDark = theme.theme === "dark";
+  const currencyFill = isDark ? "white" : "black";
 
   // State to hold merged cart items with product info
   const [cartProducts, setCartProducts] = useState<any[]>([]);
@@ -113,10 +118,11 @@ const CartPage: React.FC = () => {
                             </p>
                           )}
                         </div>
-                        <div className="text-left">
+                        <div className="text-left flex">
                           <p className="font-semibold">
-                            {item.price.toFixed(2)} R.S
+                            {item.price.toFixed(2)}{" "}
                           </p>
+                          <Currency currencyFill={currencyFill} />
                         </div>
                       </div>
                     </div>
@@ -165,16 +171,23 @@ const CartPage: React.FC = () => {
                 <span>
                   {totalItems} {t("item")}
                 </span>
-                <span>{totalPrice.toFixed(2)} R.S</span>
+                <div className="flex">
+                  <span>{totalPrice.toFixed(2)} </span>
+                  <Currency currencyFill={currencyFill} />
+                </div>
               </div>
               <div className="flex justify-between">
                 <span>{t("discount")}</span>
-                <span>0 R.S</span>
+                <Currency currencyFill={currencyFill} />
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">
                 <span>{t("total")}</span>
-                <span>{totalPrice.toFixed(2)} R.S</span>
+                <div className="flex">
+                  {" "}
+                  <span>{totalPrice.toFixed(2)}</span>
+                  <Currency currencyFill={currencyFill} />
+                </div>
               </div>
               <div className="pt-4">
                 {/* <Input
