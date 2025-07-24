@@ -76,5 +76,45 @@
     "applyDiscount": "Apply Discount Code",
     "orderSummary": "Order Summary",
     "completeOrder": "Complete Order"
+  },
+  "form": {
+    "carMake": "Car Make",
+    "carModel": "Car Model",
+    "carType": "Car Type",
+    "front": "Front Window",
+    "sides": "Sides Window",
+    "back": "Back Window",
+    "third": "Third Window",
+    "totalPrice": "Total Price",
+    "add": "Add to Cart",
+    "removeExtra": "Remove Extra",
+    "frontplaceholder": "Select front window option",
+    "sidesplaceholder": "Select sides window option",
+    "backplaceholder": "Select back window option",
+    "thirdplaceholder": "Select third window option",
+    "removed": "removed",
+    "other": "Other",
+    "carMakePlaceholder": "Select car make",
+    "carModelPlaceholder": "Select car model",
+    "carTypePlaceholder": "Select car type",
+    "orderSepcification": "Order Specification"
+  },
+  "frontWindowOptions": {
+    "transparent": "Transparent (According to Rules)",
+    "lightdark": "00 Light Tint"
+  },
+  "backWindowOptions": {
+    "transparent": "Transparent (According to Rules)",
+    "lightdark": "00 Light Tint",
+    "darkShadow": "01 Light with Shadow Touch (According to Rules)",
+    "mediumShadow": "02 Medium Shadow (According to Rules)",
+    "dark": "03 Dark Tint"
+  },
+  "sidesWindowOptions": {
+    "transparent": "Transparent (According to Rules)",
+    "lightdark": "00 Light Tint",
+    "darkShadow": "01 Light with Shadow Touch (According to Rules)",
+    "mediumShadow": "02 Medium Shadow (According to Rules)",
+    "dark": "03 Dark Tint"
   }
 }

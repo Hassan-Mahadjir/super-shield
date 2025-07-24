@@ -74,5 +74,45 @@
     "applyDiscount": "تطبيق رمز الخصم",
     "orderSummary": "ملخص الطلب",
     "completeOrder": "إتمام الطلب"
+  },
+  "form": {
+    "carMake": "ماركة السيارة",
+    "carModel": "موديل السيارة",
+    "carType": "نوع السيارة",
+    "front": "النافذة الأمامية",
+    "sides": "النوافذ الجانبية",
+    "back": "النافذة الخلفية",
+    "third": "النافذة الثالثة",
+    "totalPrice": "الإجمالي",
+    "add": "أضف إلى السلة",
+    "removeExtra": "إزالة الإضافات",
+    "frontplaceholder": "اختر خيار النافذة الأمامية",
+    "sidesplaceholder": "اختر خيار النافذة الجانبية",
+    "backplaceholder": "اختر خيار النافذة الخلفية",
+    "thirdplaceholder": "اختر خيار النافذة الثالثة",
+    "removed": "إزالة",
+    "other": "أخرى",
+    "carMakePlaceholder": "اختر ماركة السيارة",
+    "carModelPlaceholder": "اختر موديل السيارة",
+    "carTypePlaceholder": "اختر نوع السيارة",
+    "orderSepcification": "تفاصيل الطلب"
+  },
+  "frontWindowOptions": {
+    "transparent": "شفاف (مطابق للمرور)",
+    "lightdark": " 00 خفيف العتمة"
+  },
+  "backWindowOptions": {
+    "transparent": "شفاف (مطابق للمرور)",
+    "lightdark": " 00 خفيف العتمة",
+    "darkShadow": "01 خفيف بلمسة ظل ( مطابق للمرور )",
+    "mediumShadow": "02 متوسط ظل ( مطابق للمرور )",
+    "dark": "03 شديد العتمة"
+  },
+  "sidesWindowOptions": {
+    "transparent": "شفاف (مطابق للمرور)",
+    "lightdark": " 00 خفيف العتمة",
+    "darkShadow": "01 خفيف بلمسة ظل ( مطابق للمرور )",
+    "mediumShadow": "02 متوسط ظل ( مطابق للمرور )",
+    "dark": "03 شديد العتمة"
   }
 }

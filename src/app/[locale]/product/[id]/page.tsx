@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabseClient";
 import ProductImages from "@/components/ProductImages";
 import CustomizedProducts from "@/components/CustomizedProducts";
+import { useTheme } from "next-themes";
+import Currency from "@/components/Currency";
 
 const ProductPage = ({
   params,
@@ -12,6 +14,9 @@ const ProductPage = ({
 }) => {
   const { id, locale } = React.use(params);
   const [product, setProduct] = useState<any>(null);
+  const theme = useTheme();
+  const isDark = theme.theme === "dark";
+  const currencyFill = isDark ? "white" : "black";
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -41,12 +46,15 @@ const ProductPage = ({
           <h1 className="text-4xl font-medium">{product.name}</h1>
           <p>{product.description}</p>
           <div className="h-[2px] bg-gray-200" />
-          <div className="flex items-center gap-4">
-            <h3 className="text-xl line-through">{product.old_price}</h3>
-            <h2 className="font-medium text-2xl">{product.current_price}</h2>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl line-through text-red-700">
+              {product.old_price}
+            </h3>
+            <h2 className="font-bold text-3xl ">{product.current_price}</h2>
+            <Currency currencyFill={currencyFill} />
           </div>
           <div className="h-[2px] bg-gray-200" />
-          <CustomizedProducts />
+          <CustomizedProducts product={product} />
           {/* ...any other product details... */}
         </div>
       </div>
