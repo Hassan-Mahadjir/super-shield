@@ -7,7 +7,7 @@ export interface CartItem {
   price: number;
   description?: string;
   image?: string;
-  oldPrice?: string;
+  old_price?: number;
   quantity: number;
 }
 
@@ -19,7 +19,8 @@ interface CartState {
     name: string,
     image: string,
     description: string,
-    quantity: number | string
+    quantity: number | string,
+    old_price?: number
   ) => void;
   removeFromCart: (id: number) => void;
   increaseQuantity: (id: number) => void;
@@ -32,7 +33,7 @@ export const useCart = create<CartState>()(
     (set) => ({
       cart: [],
 
-      addToCart: (id, price, name, image, description, quantity) =>
+      addToCart: (id, price, name, image, description, quantity, old_price) =>
         set((state) => {
           const qty =
             typeof quantity === "string" ? Number(quantity) : quantity;
@@ -54,6 +55,7 @@ export const useCart = create<CartState>()(
             image,
             description,
             quantity: qty,
+            old_price,
           };
 
           return { cart: [...state.cart, newItem] };

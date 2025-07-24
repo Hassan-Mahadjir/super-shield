@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { MagicCard } from "./magicui/magic-card";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -9,65 +10,77 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { useCart } from "@/store/cart/cart";
+import { supabase } from "../lib/supabseClient";
 
 const Offer = () => {
   const { theme } = useTheme();
   const { addToCart } = useCart();
   const t = useTranslations("common");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const [products, setProducts] = useState<any[] | null>(null);
 
   type Product = {
     id: number;
     name: string;
-    price: number;
     description: string;
-    image: string;
-    oldPrice: string;
+    images: string[];
+    current_price: number;
+    old_price: number;
+    created_at: string;
+    language: string;
+    has_offer: boolean;
   };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase.from("product").select("*");
+      if (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } else {
+        setProducts(data);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  if (!products) {
+    return <div className="text-center my-10">Loading...</div>;
+  }
+
+  const filteredProducts = products.filter(
+    (product: Product) => product.has_offer && product.language === locale
+  );
+
+  if (filteredProducts.length === 0) {
+    return (
+      <div className="text-center my-10">
+        No offers found for this language.
+      </div>
+    );
+  }
 
   const handleAddtoCart = (product: Product) => {
     addToCart(
       product.id,
-      product.price,
+      product.current_price,
       product.name,
-      product.image,
+      product.images && product.images.length > 0
+        ? product.images[0]
+        : "/hero.png",
       product.description,
       1
     );
   };
-  const locale = useLocale();
-  const isRTL = locale === "ar";
+
   return (
     <div className="mt-5 mx-5">
       <p className="text-center my-5 font-bold text-2xl">{t("offer")}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center justify-items-center">
-        {[
-          {
-            id: 1,
-            name: "Nano Ceramic - Suitable for all cars",
-            description: "Protects your car from heat and UV rays",
-            image: "/hero.png",
-            oldPrice: "500 $",
-            price: 100,
-          },
-          {
-            id: 2,
-            name: "Premium Silver Insulator",
-            description: "Blocks 99% of UV, keeps car cool",
-            image: "/hero-blue.png",
-            oldPrice: "600 $",
-            price: 150,
-          },
-          {
-            id: 3,
-            name: "Red Shield Pro",
-            description: "Maximum heat protection for luxury cars",
-            image: "/hero-red.png",
-            oldPrice: "700 $",
-            price: 200,
-          },
-        ].map((product, idx) => (
+        {filteredProducts.map((product: Product, idx: number) => (
           <Card
-            key={idx}
+            key={product.id || idx}
             className="p-0 max-w-xs w-full shadow-none border-none"
           >
             <MagicCard
@@ -75,13 +88,19 @@ const Offer = () => {
               className="p-0"
             >
               <CardHeader className="border-b border-border p-4 [.border-b]:pb-4 relative">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={300}
-                  height={300}
-                  className="mx-auto"
-                />
+                <Link href={`/product/${product.id}`}>
+                  <Image
+                    src={
+                      product.images && product.images.length > 0
+                        ? product.images[0]
+                        : "/hero.png"
+                    }
+                    alt={product.name}
+                    width={300}
+                    height={300}
+                    className="mx-auto cursor-pointer"
+                  />
+                </Link>
                 <span
                   className={`absolute bottom-2 ${
                     isRTL ? "right-2" : "left-2"
@@ -102,10 +121,10 @@ const Offer = () => {
                   </div>
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <p className="line-through text-gray-400">
-                      {product.oldPrice}
+                      {product.old_price}
                     </p>
                     <span className="font-bold text-xl text-green-600">
-                      {product.price}
+                      {product.current_price}
                     </span>
                   </div>
                 </div>

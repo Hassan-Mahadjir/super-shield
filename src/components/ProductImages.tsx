@@ -8,15 +8,32 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const images = [
+type ProductImagesProps = {
+  images?: Array<string | { id?: number; src: string; alt?: string }>;
+};
+
+const defaultImages = [
   { id: 1, src: "/hero.png", alt: "Product Image 1" },
   { id: 2, src: "/hero-blue.png", alt: "Product Image 2" },
   { id: 3, src: "/hero-red.png", alt: "Product Image 3" },
 ];
 
-const ProductImages = () => {
+const ProductImages = ({ images }: ProductImagesProps) => {
   const [index, setIndex] = useState(0);
   const swiperRef = useRef<any>(null);
+  // Normalize images to array of {id, src, alt}
+  const normalizedImages =
+    images && images.length > 0
+      ? images.map((img, idx) =>
+          typeof img === "string"
+            ? { id: idx, src: img, alt: `Product Image ${idx + 1}` }
+            : {
+                id: img.id ?? idx,
+                src: img.src,
+                alt: img.alt ?? `Product Image ${idx + 1}`,
+              }
+        )
+      : defaultImages;
 
   return (
     <div className="w-full max-w-xl mx-auto">
@@ -32,7 +49,7 @@ const ProductImages = () => {
           pagination={{ clickable: true }}
           className="w-full h-full"
         >
-          {images.map((img) => (
+          {normalizedImages.map((img) => (
             <SwiperSlide key={img.id}>
               <div className="relative w-full h-full">
                 <Image
@@ -49,7 +66,7 @@ const ProductImages = () => {
 
       {/* Thumbnail Selector */}
       <div className="flex flex-wrap justify-center gap-3 mt-6">
-        {images.map((img, idx) => (
+        {normalizedImages.map((img, idx) => (
           <div
             key={img.id}
             onClick={() => {

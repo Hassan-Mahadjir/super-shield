@@ -1,57 +1,57 @@
-import CustomizedProducts from "@/components/CustomizedProducts";
+"use client";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { supabase } from "@/lib/supabseClient";
 import ProductImages from "@/components/ProductImages";
-import React from "react";
+import CustomizedProducts from "@/components/CustomizedProducts";
 
-const page = () => {
+const ProductPage = ({
+  params,
+}: {
+  params: Promise<{ id: string; locale: string }>;
+}) => {
+  const { id, locale } = React.use(params);
+  const [product, setProduct] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data, error } = await supabase
+        .from("product")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (!error) setProduct(data);
+    };
+    fetchProduct();
+  }, [id]);
+
+  if (!product) return <div>Loading...</div>;
+
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* photo gallary */}
+        {/* photo gallery */}
         <div className="lg:col-span-1 space-y-4">
           <div className="lg:sticky top-24">
-            <ProductImages />
+            <ProductImages images={product.images} />
           </div>
         </div>
-        {/* product discription */}
+        {/* product description */}
         <div className="lg:col-span-2 space-y-4">
-          <h1 className="text-4xl font-medium">Product name</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-            voluptatem est illo doloribus eveniet cupiditate obcaecati? Qui
-            dignissimos reprehenderit nulla deleniti laborum quos optio placeat,
-            fuga excepturi eligendi minima ratione!
-          </p>
+          <h1 className="text-4xl font-medium">{product.name}</h1>
+          <p>{product.description}</p>
           <div className="h-[2px] bg-gray-200" />
           <div className="flex items-center gap-4">
-            <h3 className="text-xl line-through">$50</h3>
-            <h2 className="font-medium text-2xl">$20</h2>
+            <h3 className="text-xl line-through">{product.old_price}</h3>
+            <h2 className="font-medium text-2xl">{product.current_price}</h2>
           </div>
           <div className="h-[2px] bg-gray-200" />
           <CustomizedProducts />
-          <div className="h-[2px] bg-gray-200" />
-          {/* prduct specificaion(s) */}
-          <div className="text-sm">
-            <h4 className="font-medium mb-4">Title</h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad
-              consectetur nulla, sapiente neque accusamus quidem nostrum
-              doloremque consequatur assumenda, minima impedit ducimus sequi
-              eligendi. Quidem recusandae incidunt officia reiciendis modi.
-            </p>
-          </div>
-          <div className="text-sm">
-            <h4 className="font-medium mb-4">Title</h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad
-              consectetur nulla, sapiente neque accusamus quidem nostrum
-              doloremque consequatur assumenda, minima impedit ducimus sequi
-              eligendi. Quidem recusandae incidunt officia reiciendis modi.
-            </p>
-          </div>
+          {/* ...any other product details... */}
         </div>
       </div>
     </div>
   );
 };
 
-export default page;
+export default ProductPage;

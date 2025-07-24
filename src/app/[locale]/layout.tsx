@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/cart/whatsappButton";
+import { AuthProvider } from "@/components/context/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,7 +51,7 @@ export default async function LocaleLayout({
             disableTransitionOnChange
           >
             <Navbar />
-            {children}
+            <AuthProvider>{children}</AuthProvider>
             <WhatsappButton />
             <Footer />
           </ThemeProvider>
