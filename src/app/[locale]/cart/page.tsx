@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "@/store/cart/cart";
+import { supabase } from "@/lib/supabseClient";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
 
@@ -18,9 +19,55 @@ const CartPage: React.FC = () => {
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
 
+  // State to hold merged cart items with product info
+  const [cartProducts, setCartProducts] = useState<any[]>([]);
+
+  // Fetch product info for cart items if missing
+  useEffect(() => {
+    const fetchProducts = async () => {
+      // Find cart items missing name/price/image
+      const missingIds = cart
+        .filter((item) => !item.name || !item.price || !item.image)
+        .map((item) => item.id);
+      let fetchedProducts: any[] = [];
+      if (missingIds.length > 0) {
+        const { data, error } = await supabase
+          .from("product")
+          .select("id, name, images, current_price, description")
+          .in("id", missingIds);
+        if (!error && data) {
+          fetchedProducts = data;
+        }
+      }
+      // Merge cart with fetched product info
+      const merged = cart.map((item) => {
+        if (item.name && item.price && item.image) return item;
+        const found = fetchedProducts.find((p) => p.id === item.id);
+        if (found) {
+          return {
+            ...item,
+            name: found.name,
+            price: found.current_price,
+            image:
+              found.images && found.images.length > 0
+                ? found.images[0]
+                : "/hero.png",
+            description: found.description,
+          };
+        }
+        return item;
+      });
+      setCartProducts(merged);
+    };
+    fetchProducts();
+  }, [cart]);
+
   // Totals
-  const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const totalItems = cartProducts.reduce((sum, i) => sum + i.quantity, 0);
+  const totalPrice = cartProducts.reduce(
+    (sum, i) => sum + i.price * i.quantity,
+    0
+  );
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
@@ -37,7 +84,7 @@ const CartPage: React.FC = () => {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Items List */}
         <div className="lg:col-span-2 space-y-4">
-          {cart.map((item) => {
+          {cartProducts.map((item) => {
             return (
               <Card key={item.id} className="p-4">
                 <div className="flex gap-4">
@@ -60,6 +107,11 @@ const CartPage: React.FC = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-semibold text-lg">{item.name}</h3>
+                          {item.description && (
+                            <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                              {item.description}
+                            </p>
+                          )}
                         </div>
                         <div className="text-left">
                           <p className="font-semibold">

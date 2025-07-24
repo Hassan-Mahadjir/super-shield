@@ -224,20 +224,21 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     const make = values.carMake === "other" ? customMake : values.carMake;
     const model = values.carModel === "other" ? customModel : values.carModel;
     const type = values.carType === "other" ? customType : values.carType;
-    const name = `Custom Tint: ${make} ${model} (${type})`;
+    const name = `${make} ${model} (${type})`;
     const description =
       `${t("front")}: ${values.front}, ${t("back")}: ${values.back}, ${t(
         "sides"
       )}: ${values.sides}, ${t("third")}: ${values.third}` +
       (thirdWindowExtra ? ` + ${t("third")} ${t("removeExtra")}` : "");
-    addToCart(
-      Date.now(), // id (unique)
-      totalPrice,
-      "/hero.png", // image (placeholder)
-      name,
-      description,
-      1 // quantity
-    );
+    // Use product data if available, else fallback
+    const id = product?.id ?? Date.now();
+    const price = totalPrice;
+    const image =
+      product?.images && product.images.length > 0
+        ? product.images[0]
+        : "/hero.png";
+    const old_price = product?.old_price ?? undefined;
+    addToCart(id, price, name, image, description, 1, old_price);
     // Optionally reset form or show a message
   };
 
