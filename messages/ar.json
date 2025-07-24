@@ -76,7 +76,8 @@
     "completeOrder": "إتمام الطلب",
     "applying": "جاري التطبيق",
     "apply": "تطبيق",
-    "couponPlaceholder": "أدخل رمز القسيمة الخاص بك"
+    "couponPlaceholder": "أدخل رمز القسيمة الخاص بك",
+    "couponApplied": "تم تطبيق القسيمة بنجاح"
   },
   "form": {
     "carMake": "ماركة السيارة",

@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import CartButton from "./cart/cartButton";
+import { Link } from "@/i18n/navigation";
 
 const sheetOnlyItems = ["Sheet Item 1", "Sheet Item 2", "Sheet Item 3"];
 
@@ -74,12 +75,14 @@ export default function Navbar() {
       </div>
       {/* center: Logo */}
       <div className="flex items-center gap-2 my-4">
-        <Image
-          src={"/super.png"}
-          alt="super shield logo"
-          width={90}
-          height={90}
-        />
+        <Link href="/">
+          <Image
+            src={"/super.png"}
+            alt="super shield logo"
+            width={90}
+            height={90}
+          />
+        </Link>
       </div>
 
       {/* Right: Actions */}

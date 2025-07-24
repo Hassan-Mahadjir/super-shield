@@ -17,6 +17,7 @@ import { useTheme } from "next-themes";
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
+  const tError = useTranslations("error");
   const cart = useCart((state) => state.cart);
   const removeFromCart = useCart((state) => state.removeFromCart);
   const increaseQuantity = useCart((state) => state.increaseQuantity);
@@ -87,24 +88,24 @@ const CartPage: React.FC = () => {
     if (result.valid) {
       setDiscount(result.discount);
       setIsPercent(result.isPercent);
-      setCouponMessage(result.message);
+      setCouponMessage(t("couponApplied", { defaultValue: "Coupon applied!" }));
       // Increment coupon usage count in Supabase
       const { data: couponData, error: couponError } = await supabase
-        .from("coupon")
+        .from("coupons")
         .select("used_count")
         .eq("code", couponCode)
         .single();
       if (!couponError && couponData) {
         const newCount = (couponData.used_count || 0) + 1;
         await supabase
-          .from("coupon")
+          .from("coupons")
           .update({ used_count: newCount })
           .eq("code", couponCode);
       }
     } else {
       setDiscount(0);
       setIsPercent(false);
-      setCouponMessage(result.message);
+      setCouponMessage(tError(result.message));
     }
     setCouponLoading(false);
   };

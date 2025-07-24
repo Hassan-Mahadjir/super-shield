@@ -5,29 +5,29 @@ export async function validateCoupon(code: string) {
     .from("coupons")
     .select("*")
     .eq("code", code.toUpperCase())
-    .eq("active", true)
+    .eq("is_active", "true")
     .limit(1)
     .single();
 
   if (error || !data) {
-    return { valid: false, message: "Invalid or inactive coupon." };
+    return { valid: false, message: "invalid" };
   }
 
   const now = new Date();
   const expires = new Date(data.expires_at);
 
   if (expires < now) {
-    return { valid: false, message: "Coupon has expired." };
+    return { valid: false, message: "expired" };
   }
 
   if (data.max_uses && data.used_count >= data.max_uses) {
-    return { valid: false, message: "Coupon usage limit reached." };
+    return { valid: false, message: "limit" };
   }
 
   return {
     valid: true,
     discount: data.discount,
     isPercent: data.is_percent,
-    message: "Coupon is valid.",
+    message: "valid",
   };
 }

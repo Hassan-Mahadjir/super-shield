@@ -78,7 +78,8 @@
     "completeOrder": "Complete Order",
     "applying": " Applying",
     "apply": "Apply",
-    "couponPlaceholder": "Enter your coupon code"
+    "couponPlaceholder": "Enter your coupon code",
+    "couponApplied": "Coupon applied"
   },
   "form": {
     "carMake": "Car Make",
