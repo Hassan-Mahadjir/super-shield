@@ -37,6 +37,27 @@ export const useCart = create<CartState>()(
         set((state) => {
           const qty =
             typeof quantity === "string" ? Number(quantity) : quantity;
+
+          // For customized products (with customer info), always add as new item
+          const isCustomizedProduct =
+            description && description.includes("Customer:");
+
+          if (isCustomizedProduct) {
+            // Create unique ID for customized products to ensure they're always added as new items
+            const uniqueId = Date.now() + Math.random();
+            const newItem: CartItem = {
+              id: uniqueId,
+              price,
+              name,
+              image,
+              description,
+              quantity: qty,
+              old_price,
+            };
+            return { cart: [...state.cart, newItem] };
+          }
+
+          // For regular products, check for existing items
           const existingIndex = state.cart.findIndex(
             (item) =>
               item.id === id && item.name === name && item.price === price

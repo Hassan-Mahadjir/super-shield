@@ -22,6 +22,7 @@ const CartPage: React.FC = () => {
   const removeFromCart = useCart((state) => state.removeFromCart);
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
+  const clearCart = useCart((state) => state.clearCart);
   const theme = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -40,13 +41,23 @@ const CartPage: React.FC = () => {
   const [couponMessage, setCouponMessage] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
 
-  // Fetch product info for cart items if missing
+  // Handle cart items - customized products already have all info, regular products need fetching
   useEffect(() => {
-    const fetchProducts = async () => {
-      // Find cart items missing name/price/image
-      const missingIds = cart
+    const processCartItems = async () => {
+      // Separate customized products (which have all info) from regular products
+      const customizedProducts = cart.filter(
+        (item) => item.description && item.description.includes("Customer:")
+      );
+
+      // Find regular cart items missing name/price/image
+      const regularItems = cart.filter(
+        (item) => !item.description || !item.description.includes("Customer:")
+      );
+
+      const missingIds = regularItems
         .filter((item) => !item.name || !item.price || !item.image)
         .map((item) => item.id);
+
       let fetchedProducts: any[] = [];
       if (missingIds.length > 0) {
         const { data, error } = await supabase
@@ -57,9 +68,18 @@ const CartPage: React.FC = () => {
           fetchedProducts = data;
         }
       }
+
       // Merge cart with fetched product info
       const merged = cart.map((item) => {
+        // If it's a customized product, return as is
+        if (item.description && item.description.includes("Customer:")) {
+          return item;
+        }
+
+        // If it already has all info, return as is
         if (item.name && item.price && item.image) return item;
+
+        // Try to fetch from database
         const found = fetchedProducts.find((p) => p.id === item.id);
         if (found) {
           return {
@@ -77,7 +97,7 @@ const CartPage: React.FC = () => {
       });
       setCartProducts(merged);
     };
-    fetchProducts();
+    processCartItems();
   }, [cart]);
 
   // Coupon apply handler
@@ -160,9 +180,78 @@ const CartPage: React.FC = () => {
                         <div>
                           <h3 className="font-semibold text-lg">{item.name}</h3>
                           {item.description && (
-                            <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                              {item.description}
-                            </p>
+                            <div className="text-xs text-gray-500 mt-1 space-y-1">
+                              {item.description.includes("Customer:") ? (
+                                // For customized products, parse and display customer info nicely
+                                (() => {
+                                  const parts = item.description.split(" | ");
+
+                                  // Extract customer name and phone from the first two parts
+                                  const customerName = parts[0]
+                                    .replace("Customer:", "")
+                                    .trim();
+                                  const phoneNumber = parts[1]
+                                    ? parts[1].replace("Phone:", "").trim()
+                                    : "";
+
+                                  // Extract specification parts (skip phone number)
+                                  const specificationParts = parts.slice(2);
+
+                                  return (
+                                    <>
+                                      <div className="space-y-1">
+                                        <div className="font-medium">
+                                          <span className="font-semibold text-white">
+                                            customer:
+                                          </span>{" "}
+                                          {customerName}
+                                        </div>
+                                        <div className="font-medium">
+                                          <span className="font-semibold text-white">
+                                            phone number:
+                                          </span>{" "}
+                                          {phoneNumber}
+                                        </div>
+                                        <div className="font-semibold text-white mt-2">
+                                          specification:
+                                        </div>
+                                        <div className="space-y-1 ml-2">
+                                          {specificationParts.map(
+                                            (spec: string, index: number) => {
+                                              const [key, value] =
+                                                spec.split(":");
+                                              if (key && value) {
+                                                const formattedKey = key
+                                                  .trim()
+                                                  .toLowerCase()
+                                                  .replace(/\s+/g, " ");
+                                                return (
+                                                  <div
+                                                    key={index}
+                                                    className="text-gray-600"
+                                                  >
+                                                    <span className="font-medium">
+                                                      {formattedKey}:
+                                                    </span>{" "}
+                                                    {value.trim()}
+                                                  </div>
+                                                );
+                                              }
+                                              return null;
+                                            }
+                                          )}
+                                        </div>
+                                      </div>
+                                    </>
+                                  );
+                                })()
+                              ) : (
+                                // For regular products, display description as is
+                                <p className="line-clamp-2">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
                           )}
                         </div>
                         <div className="text-left flex">

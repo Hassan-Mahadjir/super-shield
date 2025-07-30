@@ -80,6 +80,8 @@
     "couponApplied": "تم تطبيق القسيمة بنجاح"
   },
   "form": {
+    "name": "الاسم الكامل",
+    "phone": "رقم الهاتف",
     "carMake": "ماركة السيارة",
     "carModel": "موديل السيارة",
     "carType": "نوع السيارة",
@@ -96,10 +98,13 @@
     "thirdplaceholder": "اختر خيار النافذة الثالثة",
     "removed": "إزالة",
     "other": "أخرى",
-    "carMakePlaceholder": "اختر ماركة السيارة",
-    "carModelPlaceholder": "اختر موديل السيارة",
-    "carTypePlaceholder": "اختر نوع السيارة",
-    "orderSepcification": "تفاصيل الطلب"
+    "namePlaceholder": "أدخل اسمك الكامل",
+    "phonePlaceholder": "أدخل رقم هاتفك",
+    "carMakePlaceholder": "أدخل ماركة السيارة (مثل تويوتا، بي إم دبليو)",
+    "carModelPlaceholder": "اختر سنة السيارة",
+    "carTypePlaceholder": "أدخل نوع السيارة (مثل سيدان، إس يو في)",
+    "orderSepcification": "تفاصيل الطلب",
+    "addedSuccessfully": "تمت الإضافة بنجاح! تحقق من سلة المشتريات."
   },
   "frontWindowOptions": {
     "transparent": "شفاف (مطابق للمرور)",

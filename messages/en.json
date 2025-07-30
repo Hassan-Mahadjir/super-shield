@@ -82,6 +82,8 @@
     "couponApplied": "Coupon applied"
   },
   "form": {
+    "name": "Full Name",
+    "phone": "Phone Number",
     "carMake": "Car Make",
     "carModel": "Car Model",
     "carType": "Car Type",
@@ -98,10 +100,13 @@
     "thirdplaceholder": "Select third window option",
     "removed": "removed",
     "other": "Other",
-    "carMakePlaceholder": "Select car make",
-    "carModelPlaceholder": "Select car model",
-    "carTypePlaceholder": "Select car type",
-    "orderSepcification": "Order Specification"
+    "namePlaceholder": "Enter your full name",
+    "phonePlaceholder": "Enter your phone number",
+    "carMakePlaceholder": "Enter car make (e.g., Toyota, BMW)",
+    "carModelPlaceholder": "Select car year",
+    "carTypePlaceholder": "Enter car type (e.g., Sedan, SUV)",
+    "orderSepcification": "Order Specification",
+    "addedSuccessfully": "added successfully! Check your cart."
   },
   "frontWindowOptions": {
     "transparent": "Transparent (According to Rules)",

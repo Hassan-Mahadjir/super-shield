@@ -49,6 +49,8 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   const currencyFill = isDark ? "white" : "black";
 
   const formSchema = z.object({
+    name: z.string().min(1, { message: t("name") }),
+    phone: z.string().min(1, { message: t("phone") }),
     front: z.string().min(1, { message: t("frontplaceholder") }),
     back: z.string().min(1, { message: t("backplaceholder") }),
     sides: z.string().min(1, { message: t("sidesplaceholder") }),
@@ -138,20 +140,25 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     },
   ];
 
-  const carData = {
-    Toyota: {
-      models: ["Corolla", "Camry", "RAV4"],
-      types: ["Sedan", "SUV", "Truck"],
-    },
-    BMW: {
-      models: ["3 Series", "5 Series", "X5"],
-      types: ["Coupe", "Sedan", "SUV"],
-    },
-    Tesla: {
-      models: ["Model S", "Model 3", "Model X"],
-      types: ["Electric", "SUV", "Sedan"],
-    },
-  };
+  // Country codes with flags
+  const countryCodes = [
+    { code: "+966", flag: "🇸🇦", country: "Saudi Arabia" },
+    { code: "+971", flag: "🇦🇪", country: "UAE" },
+    { code: "+973", flag: "🇧🇭", country: "Bahrain" },
+    { code: "+965", flag: "🇰🇼", country: "Kuwait" },
+    { code: "+968", flag: "🇴🇲", country: "Oman" },
+    { code: "+974", flag: "🇶🇦", country: "Qatar" },
+    { code: "+1", flag: "🇺🇸", country: "USA" },
+    { code: "+44", flag: "🇬🇧", country: "UK" },
+    { code: "+33", flag: "🇫🇷", country: "France" },
+    { code: "+49", flag: "🇩🇪", country: "Germany" },
+  ];
+
+  // Generate car years from 1990 to current year
+  const currentYear = new Date().getFullYear();
+  const carYears = Array.from({ length: currentYear - 1989 }, (_, i) =>
+    (1990 + i).toString()
+  ).reverse();
 
   const THIRD_WINDOW_EXTRA_COST = 200; // Example extra cost for third window
   const BASE_PRICE = product?.current_price || 0; // Example base price for the product
@@ -159,6 +166,8 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
+      phone: "",
       front: "",
       back: "",
       sides: "",
@@ -174,36 +183,19 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   // State for extra cost toggle
   const [thirdWindowExtra, setThirdWindowExtra] = useState(true);
 
-  // State for custom model/type
-  const [customMake, setCustomMake] = useState("");
+  // State for custom model
   const [customModel, setCustomModel] = useState("");
-  const [customType, setCustomType] = useState("");
+
+  // State for phone number
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+966");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  // State for success message
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Watch form values
   const watchFields = form.watch();
-  const selectedMake = form.watch("carMake");
   const selectedModel = form.watch("carModel");
-  const selectedType = form.watch("carType");
-
-  // Filtered options
-  const filteredModels =
-    selectedMake &&
-    (carData as Record<string, { models: string[]; types: string[] }>)[
-      selectedMake
-    ]
-      ? (carData as Record<string, { models: string[]; types: string[] }>)[
-          selectedMake
-        ].models
-      : [];
-  const filteredTypes =
-    selectedMake &&
-    (carData as Record<string, { models: string[]; types: string[] }>)[
-      selectedMake
-    ]
-      ? (carData as Record<string, { models: string[]; types: string[] }>)[
-          selectedMake
-        ].types
-      : [];
 
   // Calculate price
   const { totalPrice, extraCost } = useMemo(() => {
@@ -221,15 +213,21 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   // Handle submit
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Compose product name/description
-    const make = values.carMake === "other" ? customMake : values.carMake;
+    const make = values.carMake;
     const model = values.carModel === "other" ? customModel : values.carModel;
-    const type = values.carType === "other" ? customType : values.carType;
+    const type = values.carType;
+    const customerName = values.name;
+    const customerPhone = values.phone;
     const name = `${make} ${model} (${type})`;
     const description =
-      `${t("front")}: ${values.front}, ${t("back")}: ${values.back}, ${t(
-        "sides"
-      )}: ${values.sides}, ${t("third")}: ${values.third}` +
-      (thirdWindowExtra ? ` + ${t("third")} ${t("removeExtra")}` : "");
+      `Customer: ${customerName} | Phone: ${customerPhone} | ${t(
+        "carMake"
+      )}: ${make} | ${t("carModel")}: ${model} | ${t("carType")}: ${type} | ${t(
+        "front"
+      )}: ${values.front} | ${t("back")}: ${values.back} | ${t("sides")}: ${
+        values.sides
+      } | ${t("third")}: ${values.third}` +
+      (thirdWindowExtra ? ` | ${t("third")} ${t("removeExtra")}` : "");
     // Use product data if available, else fallback
     const id = product?.id ?? Date.now();
     const price = totalPrice;
@@ -239,7 +237,17 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
         : "/hero.png";
     const old_price = product?.old_price ?? undefined;
     addToCart(id, price, name, image, description, 1, old_price);
-    // Optionally reset form or show a message
+
+    // Reset form after successful submission
+    form.reset();
+    setPhoneNumber("");
+    setSelectedCountryCode("+966");
+    setThirdWindowExtra(true);
+    setCustomModel("");
+
+    // Show success message
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
   };
 
   return (
@@ -269,6 +277,68 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {/* Name Field */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="flex flex-row justify-start">
+                  <FormLabel className="w-1/6">{t("name")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="w-3/4"
+                      placeholder={t("namePlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Phone Number Field */}
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem className="flex flex-row justify-start">
+                  <FormLabel className="w-1/6">{t("phone")}</FormLabel>
+                  <FormControl>
+                    <div className="flex w-3/4 gap-2">
+                      <Select
+                        value={selectedCountryCode}
+                        onValueChange={setSelectedCountryCode}
+                      >
+                        <SelectTrigger className="w-1/3">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countryCodes.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              <span className="flex items-center gap-2">
+                                <span>{country.flag}</span>
+                                <span>{country.code}</span>
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        className="w-2/3"
+                        placeholder={t("phonePlaceholder")}
+                        value={phoneNumber}
+                        onChange={(e) => {
+                          setPhoneNumber(e.target.value);
+                          field.onChange(selectedCountryCode + e.target.value);
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Tint Options */}
             {windowFields.map((windowField) => {
               // Determine options based on window field
@@ -327,48 +397,18 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                 <FormItem className="flex flex-row justify-start">
                   <FormLabel className="w-1/6">{t("carMake")}</FormLabel>
                   <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        // Reset model/type if make changes
-                        form.setValue("carModel", "");
-                        form.setValue("carType", "");
-                        setCustomMake("");
-                        setCustomModel("");
-                        setCustomType("");
-                      }}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger
-                        className="w-3/4"
-                        dir={locale === "ar" ? "rtl" : "ltr"}
-                      >
-                        <SelectValue placeholder={t("carMakePlaceholder")} />
-                      </SelectTrigger>
-                      <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
-                        {Object.keys(carData).map((make) => (
-                          <SelectItem key={make} value={make}>
-                            {make}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="other">{t("other")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  {selectedMake === "other" && (
                     <Input
                       className="w-3/4"
                       placeholder={t("carMakePlaceholder")}
-                      value={customMake}
-                      onChange={(e) => setCustomMake(e.target.value)}
+                      {...field}
                     />
-                  )}
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Car Model */}
+            {/* Car Model (Year) */}
             <FormField
               control={form.control}
               name="carModel"
@@ -382,7 +422,6 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                         if (value !== "other") setCustomModel("");
                       }}
                       defaultValue={field.value}
-                      // Note: For full search, consider using react-select
                     >
                       <SelectTrigger
                         className="w-3/4"
@@ -391,9 +430,9 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                         <SelectValue placeholder={t("carModelPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
-                        {filteredModels.map((model: string) => (
-                          <SelectItem key={model} value={model}>
-                            {model}
+                        {carYears.map((year: string) => (
+                          <SelectItem key={year} value={year}>
+                            {year}
                           </SelectItem>
                         ))}
                         <SelectItem value="other">{t("other")}</SelectItem>
@@ -421,38 +460,12 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                 <FormItem className="flex flex-row justify-start">
                   <FormLabel className="w-1/6">{t("carType")}</FormLabel>
                   <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        if (value !== "other") setCustomType("");
-                      }}
-                      defaultValue={field.value}
-                      // Note: For full search, consider using react-select
-                    >
-                      <SelectTrigger
-                        className="w-3/4"
-                        dir={locale === "ar" ? "rtl" : "ltr"}
-                      >
-                        <SelectValue placeholder={t("carTypePlaceholder")} />
-                      </SelectTrigger>
-                      <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
-                        {filteredTypes.map((type: string) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  {selectedType === "other" && (
                     <Input
                       className="w-3/4"
                       placeholder={t("carTypePlaceholder")}
-                      value={customType}
-                      onChange={(e) => setCustomType(e.target.value)}
+                      {...field}
                     />
-                  )}
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -508,6 +521,12 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
             >
               {t("add")}
             </Button>
+
+            {showSuccess && (
+              <div className="text-green-600 text-center text-sm font-medium">
+                ✓ {t("addedSuccessfully")}
+              </div>
+            )}
           </form>
         </Form>
         {/* Note: For a fully searchable and free-text select, consider using react-select or similar library. */}
