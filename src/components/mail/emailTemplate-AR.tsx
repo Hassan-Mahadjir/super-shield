@@ -27,7 +27,7 @@ interface EmailTemplateProps {
   thirdWindow: string;
 }
 
-const EmailTemplate: React.FC<EmailTemplateProps> = ({
+const EmailTemplateAr: React.FC<EmailTemplateProps> = ({
   orderNumber,
   customerName,
   customerPhone,
@@ -66,11 +66,13 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
 
   return (
     <div
+      dir="rtl"
       style={{
         fontFamily: "Arial, sans-serif",
         maxWidth: "600px",
         margin: "0 auto",
         padding: "20px",
+        textAlign: "right",
       }}
     >
       {/* Header */}
@@ -83,10 +85,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         }}
       >
         <h1 style={{ color: "#e53e3e", margin: "0", fontSize: "28px" }}>
-          Super Shield
+          سوبر شيلد
         </h1>
         <p style={{ color: "#666", margin: "5px 0", fontSize: "16px" }}>
-          Car Window Tinting Services
+          خدمات تظليل نوافذ السيارات
         </p>
       </div>
 
@@ -100,17 +102,17 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         }}
       >
         <h2 style={{ color: "#333", margin: "0 0 10px 0", fontSize: "24px" }}>
-          Order Confirmation
+          تأكيد الطلب
         </h2>
         <p style={{ color: "#666", margin: "5px 0", fontSize: "14px" }}>
-          <strong>Order Number:</strong> {orderNumber}
+          <strong>رقم الطلب</strong>: {orderNumber}
         </p>
         <p style={{ color: "#666", margin: "5px 0", fontSize: "14px" }}>
-          <strong>Order Date:</strong> {orderDate}
+          <strong>تاريخ الطلب</strong>: {orderDate}
         </p>
       </div>
 
-      {/* Customer Information */}
+      {/* Customer Info */}
       <div style={{ marginBottom: "30px" }}>
         <h3
           style={{
@@ -121,7 +123,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             paddingBottom: "10px",
           }}
         >
-          Customer Information
+          معلومات العميل
         </h3>
         <div
           style={{
@@ -131,10 +133,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           }}
         >
           <p style={{ margin: "5px 0", fontSize: "14px" }}>
-            <strong>Name:</strong> {customerName}
+            <strong>الاسم</strong>: {customerName}
           </p>
           <p style={{ margin: "5px 0", fontSize: "14px" }}>
-            <strong>Phone:</strong> {customerPhone}
+            <strong>رقم الهاتف</strong>: {customerPhone}
           </p>
         </div>
       </div>
@@ -150,10 +152,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             paddingBottom: "10px",
           }}
         >
-          Order Details
+          تفاصيل الطلب
         </h3>
 
-        {orderItems.map((item, index) => {
+        {orderItems.map((item) => {
           const customizedInfo = item.description
             ? parseCustomizedProduct(item.description)
             : null;
@@ -180,7 +182,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                 <h4 style={{ margin: "0", color: "#333", fontSize: "16px" }}>
                   {item.name}
                 </h4>
-                <div style={{ textAlign: "right" }}>
+                <div>
                   <p
                     style={{
                       margin: "0",
@@ -189,10 +191,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                       color: "#e53e3e",
                     }}
                   >
-                    SAR {item.price.toFixed(2)} x {item.quantity}
+                    {item.price.toFixed(2)} × {item.quantity} ريال
                   </p>
                   <p style={{ margin: "0", fontSize: "14px", color: "#666" }}>
-                    Total: SAR {(item.price * item.quantity).toFixed(2)}
+                    المجموع: {(item.price * item.quantity).toFixed(2)} ريال
                   </p>
                 </div>
               </div>
@@ -213,20 +215,16 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                       fontSize: "14px",
                     }}
                   >
-                    Customization Details:
+                    تفاصيل التخصيص:
                   </h5>
 
-                  {/* Customer Info */}
-                  <div style={{ marginBottom: "10px" }}>
-                    <p style={{ margin: "3px 0", fontSize: "13px" }}>
-                      <strong>Customer:</strong> {customizedInfo.customerName}
-                    </p>
-                    <p style={{ margin: "3px 0", fontSize: "13px" }}>
-                      <strong>Phone:</strong> {customizedInfo.phoneNumber}
-                    </p>
-                  </div>
+                  <p style={{ margin: "3px 0", fontSize: "13px" }}>
+                    <strong>العميل</strong>: {customizedInfo.customerName}
+                  </p>
+                  <p style={{ margin: "3px 0", fontSize: "13px" }}>
+                    <strong>الهاتف</strong>: {customizedInfo.phoneNumber}
+                  </p>
 
-                  {/* Specifications */}
                   <p
                     style={{
                       margin: "5px 0",
@@ -234,7 +232,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                       fontWeight: "bold",
                     }}
                   >
-                    Specifications:
+                    المواصفات:
                   </p>
                   <table
                     style={{
@@ -250,7 +248,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Car Make:
+                            نوع السيارة
                           </td>
                           <td style={{ padding: "4px 8px" }}>{carMake}</td>
                         </tr>
@@ -260,7 +258,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Car Model:
+                            موديل السيارة
                           </td>
                           <td style={{ padding: "4px 8px" }}>{carModel}</td>
                         </tr>
@@ -270,7 +268,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Car Type:
+                            فئة السيارة
                           </td>
                           <td style={{ padding: "4px 8px" }}>{carType}</td>
                         </tr>
@@ -280,7 +278,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Front Window:
+                            الزجاج الأمامي
                           </td>
                           <td style={{ padding: "4px 8px" }}>{frontWindow}</td>
                         </tr>
@@ -290,7 +288,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Back Window:
+                            الزجاج الخلفي
                           </td>
                           <td style={{ padding: "4px 8px" }}>{backWindow}</td>
                         </tr>
@@ -300,7 +298,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Sides Window:
+                            الزجاج الجانبي
                           </td>
                           <td style={{ padding: "4px 8px" }}>{sidesWindow}</td>
                         </tr>
@@ -310,7 +308,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Third Window:
+                            الزجاج الثالث
                           </td>
                           <td style={{ padding: "4px 8px" }}>{thirdWindow}</td>
                         </tr>
@@ -336,7 +334,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         })}
       </div>
 
-      {/* Order Summary */}
+      {/* Summary */}
       <div
         style={{
           backgroundColor: "#f8f9fa",
@@ -346,20 +344,11 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         }}
       >
         <h3 style={{ color: "#333", margin: "0 0 15px 0", fontSize: "20px" }}>
-          Order Summary
+          ملخص الطلب
         </h3>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "8px",
-          }}
-        >
-          <span style={{ fontSize: "14px" }}>Subtotal:</span>
-          <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-            SAR {totalPrice.toFixed(2)}
-          </span>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>المجموع الفرعي</span>
+          <strong>SAR {totalPrice.toFixed(2)}</strong>
         </div>
 
         {discountAmount > 0 && (
@@ -367,17 +356,11 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              marginBottom: "8px",
+              color: "#28a745",
             }}
           >
-            <span style={{ fontSize: "14px", color: "#28a745" }}>
-              Discount:
-            </span>
-            <span
-              style={{ fontSize: "14px", fontWeight: "bold", color: "#28a745" }}
-            >
-              -SAR {discountAmount.toFixed(2)}
-            </span>
+            <span>الخصم</span>
+            <strong>- {discountAmount.toFixed(2)} ريال</strong>
           </div>
         )}
 
@@ -393,8 +376,8 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             color: "#e53e3e",
           }}
         >
-          <span>Total:</span>
-          <span>SAR {finalTotal.toFixed(2)}</span>
+          <span>الإجمالي</span>
+          <span>{finalTotal.toFixed(2)} ريال</span>
         </div>
       </div>
 
@@ -408,17 +391,17 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         }}
       >
         <p style={{ color: "#666", margin: "5px 0", fontSize: "14px" }}>
-          Thank you for choosing Super Shield!
+          شكراً لاختياركم سوبر شيلد!
         </p>
         <p style={{ color: "#666", margin: "5px 0", fontSize: "12px" }}>
-          We will contact you soon to schedule your appointment.
+          سنتواصل معكم قريباً لتحديد موعدكم.
         </p>
         <p style={{ color: "#999", margin: "15px 0 0 0", fontSize: "11px" }}>
-          This is an automated email. Please do not reply to this message.
+          هذه رسالة بريد إلكتروني تلقائية. الرجاء عدم الرد عليها.
         </p>
       </div>
     </div>
   );
 };
 
-export default EmailTemplate;
+export default EmailTemplateAr;

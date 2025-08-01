@@ -133,5 +133,33 @@
     "invalid": "Invalid or inactive coupon",
     "expired": "Coupon has expired",
     "limit": "Coupon usage limit reached"
+  },
+  "email": {
+    "company": "Super Shield",
+    "objective": "Car Window Tinting Services",
+    "orderConfirmation": "Order Confirmation",
+    "orderNumber": "Order Number",
+    "orderDate": "Order Date",
+    "customerInformation": "Customer Information",
+    "name": "Name",
+    "phone": "Phone",
+    "orderDetails": "Order Details",
+    "total": "Total",
+    "customizationDetails": "Customization Details",
+    "customer": "Customer",
+    "specification": "Specification",
+    "carMake": "Car Make",
+    "carModel": "Car Model",
+    "carType": "Car Type",
+    "front": "Front Window",
+    "back": "Back Window",
+    "sides": "Sides Window",
+    "third": "Third Window",
+    "orderSummary": "Order Summary",
+    "subTotal": "subtotal",
+    "discount": " Discount",
+    "thanks": "Thank you for choosing Super Shield!",
+    "contactSoon": "We will contact you soon to schedule your appointment.",
+    "noReply": "This is an automated email. Please do not reply to this message."
   }
 }

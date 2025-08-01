@@ -16,7 +16,7 @@ import Currency from "@/components/Currency";
 import { useTheme } from "next-themes";
 import { createOrUpdateUser } from "@/lib/api/users";
 import { createOrder } from "@/lib/api/orders";
-import { sendOrderMail } from "@/lib/server/mail";
+import { useLocale } from "next-intl";
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
@@ -26,6 +26,8 @@ const CartPage: React.FC = () => {
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
   const clearCart = useCart((state) => state.clearCart);
+
+  const locale = useLocale();
   const theme = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -206,7 +208,8 @@ const CartPage: React.FC = () => {
               .update({ used_count: newCount })
               .eq("code", couponCode);
           }
-
+        }
+        if (order) {
           // send email to admin of the order via API route
           const orderDetails = {
             orderNumber: order.id,
@@ -217,6 +220,14 @@ const CartPage: React.FC = () => {
             discountAmount,
             finalTotal,
             orderDate: order.created_at || new Date().toISOString(),
+            carMake,
+            carModel,
+            carType,
+            frontWindow,
+            backWindow,
+            sidesWindow,
+            thirdWindow,
+            locale,
           };
           await fetch("/api/send-order-mail", {
             method: "POST",

@@ -1,7 +1,9 @@
+"use client";
 import nodemailer from "nodemailer";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import EmailTemplate from "../../components/mail/emailTemplate";
+import EmailTemplateAr from "@/components/mail/emailTemplate-AR";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -12,10 +14,17 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendOrderMail(orderDetails: any) {
-  // Render the email template to HTML
-  const html = ReactDOMServer.renderToStaticMarkup(
-    <EmailTemplate {...orderDetails} />
-  );
+  let html;
+
+  if (orderDetails.locale === "ar") {
+    html = ReactDOMServer.renderToStaticMarkup(
+      <EmailTemplateAr {...orderDetails} />
+    );
+  } else {
+    html = ReactDOMServer.renderToStaticMarkup(
+      <EmailTemplate {...orderDetails} />
+    );
+  }
 
   const mailOptions = {
     from: process.env.GOOGLE_MAIL_USER,
