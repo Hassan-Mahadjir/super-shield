@@ -246,11 +246,11 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
           "carMake"
         )}: ${make} | ${t("carModel")}: ${model} | ${t(
           "carType"
-        )}: ${type} | ${t("front")}: ${frontDisplay} (${values.front}) | ${t(
+        )}: ${type} | ${t("front")}: ${frontDisplay} | ${t(
           "back"
-        )}: ${backDisplay} (${values.back}) | ${t("sides")}: ${sidesDisplay} (${
-          values.sides
-        }) | ${t("third")}: ${thirdDisplay} (${values.third || ""})` +
+        )}: ${backDisplay} | ${t("sides")}: ${sidesDisplay} | ${t(
+          "third"
+        )}: ${thirdDisplay}` +
         (thirdWindowExtra ? ` | ${t("third")} ${t("removeExtra")}` : "");
 
       const id = product?.id ?? Date.now();

@@ -347,8 +347,8 @@ const EmailTemplateAr: React.FC<EmailTemplateProps> = ({
           ملخص الطلب
         </h3>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span>المجموع الفرعي</span>
-          <strong>SAR {totalPrice.toFixed(2)}</strong>
+          <span>المجموع الفرعي </span>
+          <strong>{totalPrice.toFixed(2)}ريال</strong>
         </div>
 
         {discountAmount > 0 && (
