@@ -16,6 +16,7 @@ import Currency from "@/components/Currency";
 import { useTheme } from "next-themes";
 import { createOrUpdateUser } from "@/lib/api/users";
 import { createOrder } from "@/lib/api/orders";
+import { sendOrderMail } from "@/lib/server/mail";
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
@@ -205,6 +206,23 @@ const CartPage: React.FC = () => {
               .update({ used_count: newCount })
               .eq("code", couponCode);
           }
+
+          // send email to admin of the order via API route
+          const orderDetails = {
+            orderNumber: order.id,
+            customerName: user.name,
+            customerPhone: user.phone_number,
+            orderItems: cartProducts,
+            totalPrice,
+            discountAmount,
+            finalTotal,
+            orderDate: order.created_at || new Date().toISOString(),
+          };
+          await fetch("/api/send-order-mail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderDetails),
+          });
         }
       }
 
