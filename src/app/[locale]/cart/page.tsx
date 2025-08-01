@@ -117,13 +117,6 @@ const CartPage: React.FC = () => {
         .select("used_count")
         .eq("code", couponCode)
         .single();
-      if (!couponError && couponData) {
-        const newCount = (couponData.used_count || 0) + 1;
-        await supabase
-          .from("coupons")
-          .update({ used_count: newCount })
-          .eq("code", couponCode);
-      }
     } else {
       setDiscount(0);
       setIsPercent(false);
@@ -198,6 +191,20 @@ const CartPage: React.FC = () => {
         const order = await createOrder(orderData);
         if (!order) {
           console.error("Failed to create order for item:", item.id);
+        } else if (discount > 0 && couponCode) {
+          // Increment coupon usage count in Supabase only after successful order creation
+          const { data: couponData, error: couponError } = await supabase
+            .from("coupons")
+            .select("used_count")
+            .eq("code", couponCode)
+            .single();
+          if (!couponError && couponData) {
+            const newCount = (couponData.used_count || 0) + 1;
+            await supabase
+              .from("coupons")
+              .update({ used_count: newCount })
+              .eq("code", couponCode);
+          }
         }
       }
 
