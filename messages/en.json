@@ -79,7 +79,10 @@
     "applying": " Applying",
     "apply": "Apply",
     "couponPlaceholder": "Enter your coupon code",
-    "couponApplied": "Coupon applied"
+    "couponApplied": "Coupon applied",
+    "customer": "Customer",
+    "phoneNumber": "Phone Number",
+    "specification": "Specification"
   },
   "form": {
     "name": "Full Name",

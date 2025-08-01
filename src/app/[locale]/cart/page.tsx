@@ -14,6 +14,8 @@ import { validateCoupon } from "@/hook/validateCoupon";
 import { useTranslations } from "next-intl";
 import Currency from "@/components/Currency";
 import { useTheme } from "next-themes";
+import { createOrUpdateUser } from "@/lib/api/users";
+import { createOrder } from "@/lib/api/orders";
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
@@ -130,6 +132,82 @@ const CartPage: React.FC = () => {
     setCouponLoading(false);
   };
 
+  // Handle checkout and save order
+  const handleCheckout = async () => {
+    try {
+      // For each customized product in cart, create an order
+      const customizedProducts = cartProducts.filter(
+        (item) => item.description && item.description.includes("Customer:")
+      );
+
+      for (const item of customizedProducts) {
+        // Parse customer info from description
+        const descriptionParts = item.description.split(" | ");
+        const customerName = descriptionParts[0]
+          .replace("Customer:", "")
+          .trim();
+        const phoneNumber = descriptionParts[1].replace("Phone:", "").trim();
+
+        // Create or update user
+        const userData = {
+          phone_number: phoneNumber,
+          name: customerName,
+        };
+
+        const user = await createOrUpdateUser(userData);
+        if (!user) {
+          console.error("Failed to create/update user for:", phoneNumber);
+          continue;
+        }
+
+        // Parse car details from description - use position-based parsing for language independence
+        // The description format is: Customer | Phone | Car Make | Car Model | Car Type | Front Window | Back Window | Sides Window | Third Window
+        const carMake = descriptionParts[2]?.split(":")[1]?.trim() || "";
+        const carModel = descriptionParts[3]?.split(":")[1]?.trim() || "";
+        const carType = descriptionParts[4]?.split(":")[1]?.trim() || "";
+
+        // Parse window details - extract only canonical values for database storage
+        // The description format is: Customer | Phone | Car Make | Car Model | Car Type | Front Window | Back Window | Sides Window | Third Window
+        // So window parts start from index 5
+        const windowParts = descriptionParts.slice(5);
+
+        // Store the full window option string (including code and rule text) for database storage
+        // Store only the value after the colon (e.g., "00 Light Tint (lightdark)") for database storage
+        const frontWindow = windowParts[0]?.split(":")[1]?.trim() || "";
+        const backWindow = windowParts[1]?.split(":")[1]?.trim() || "";
+        const sidesWindow = windowParts[2]?.split(":")[1]?.trim() || "";
+        const thirdWindow = windowParts[3]?.split(":")[1]?.trim() || "";
+
+        // Create order
+        const orderData = {
+          user_phone_number: phoneNumber,
+          coupon_code: discount > 0 ? couponCode : undefined,
+          car_make: carMake,
+          car_model: carModel,
+          car_type: carType,
+          front_window: frontWindow,
+          back_window: backWindow,
+          sides_window: sidesWindow,
+          third_window: thirdWindow || null,
+          quantity: item.quantity,
+          price: item.price,
+          discount_amount: discountAmount,
+          final_price: finalTotal,
+        };
+
+        const order = await createOrder(orderData);
+        if (!order) {
+          console.error("Failed to create order for item:", item.id);
+        }
+      }
+
+      // Redirect to success page or show success message
+      // You can implement navigation here
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
+  };
+
   // Totals
   const totalItems = cartProducts.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = cartProducts.reduce(
@@ -194,7 +272,7 @@ const CartPage: React.FC = () => {
                                     ? parts[1].replace("Phone:", "").trim()
                                     : "";
 
-                                  // Extract specification parts (skip phone number)
+                                  // Extract specification parts (skip customer and phone)
                                   const specificationParts = parts.slice(2);
 
                                   return (
@@ -202,29 +280,37 @@ const CartPage: React.FC = () => {
                                       <div className="space-y-1">
                                         <div className="font-medium">
                                           <span className="font-semibold text-white">
-                                            customer:
+                                            {t("customer")}:
                                           </span>{" "}
                                           {customerName}
                                         </div>
                                         <div className="font-medium">
                                           <span className="font-semibold text-white">
-                                            phone number:
+                                            {t("phoneNumber")}:
                                           </span>{" "}
                                           {phoneNumber}
                                         </div>
                                         <div className="font-semibold text-white mt-2">
-                                          specification:
+                                          {t("specification")}:
                                         </div>
                                         <div className="space-y-1 ml-2">
                                           {specificationParts.map(
                                             (spec: string, index: number) => {
                                               const [key, value] =
                                                 spec.split(":");
-                                              if (key && value) {
+                                              if (
+                                                key &&
+                                                value &&
+                                                value.trim() !== ""
+                                              ) {
                                                 const formattedKey = key
                                                   .trim()
                                                   .toLowerCase()
                                                   .replace(/\s+/g, " ");
+                                                // Remove the canonical value in parentheses for display
+                                                const displayValue = value
+                                                  .trim()
+                                                  .replace(/\s*\([^)]+\)$/, "");
                                                 return (
                                                   <div
                                                     key={index}
@@ -233,7 +319,7 @@ const CartPage: React.FC = () => {
                                                     <span className="font-medium">
                                                       {formattedKey}:
                                                     </span>{" "}
-                                                    {value.trim()}
+                                                    {displayValue}
                                                   </div>
                                                 );
                                               }
@@ -364,10 +450,11 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
               <div className="pt-4">
-                <Link href="/cart/checkout">
+                <Link href="#">
                   <Button
                     className="w-full hover:bg-red-800 transition duration-300 hover:text-white"
                     size="lg"
+                    onClick={handleCheckout}
                   >
                     {t("completeOrder")}
                   </Button>

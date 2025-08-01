@@ -85,58 +85,58 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
 
   const frontOptions = [
     {
-      value: tFrontWindowOptions("transparent"),
+      value: "transparent",
       label: tFrontWindowOptions("transparent"),
     },
     {
-      value: tFrontWindowOptions("lightdark"),
+      value: "lightdark",
       label: tFrontWindowOptions("lightdark"),
     },
   ];
 
   const backOptions = [
     {
-      value: tBackWindowOptions("transparent"),
+      value: "transparent",
       label: tBackWindowOptions("transparent"),
     },
     {
-      value: tBackWindowOptions("lightdark"),
+      value: "lightdark",
       label: tBackWindowOptions("lightdark"),
     },
     {
-      value: tBackWindowOptions("darkShadow"),
+      value: "darkShadow",
       label: tBackWindowOptions("darkShadow"),
     },
     {
-      value: tBackWindowOptions("mediumShadow"),
+      value: "mediumShadow",
       label: tBackWindowOptions("mediumShadow"),
     },
     {
-      value: tBackWindowOptions("dark"),
+      value: "dark",
       label: tBackWindowOptions("dark"),
     },
   ];
 
   const sidesOptions = [
     {
-      value: tBackWindowOptions("transparent"),
-      label: tBackWindowOptions("transparent"),
+      value: "transparent",
+      label: tSidesWindowOptions("transparent"),
     },
     {
-      value: tBackWindowOptions("lightdark"),
-      label: tBackWindowOptions("lightdark"),
+      value: "lightdark",
+      label: tSidesWindowOptions("lightdark"),
     },
     {
-      value: tBackWindowOptions("darkShadow"),
-      label: tBackWindowOptions("darkShadow"),
+      value: "darkShadow",
+      label: tSidesWindowOptions("darkShadow"),
     },
     {
-      value: tBackWindowOptions("mediumShadow"),
-      label: tBackWindowOptions("mediumShadow"),
+      value: "mediumShadow",
+      label: tSidesWindowOptions("mediumShadow"),
     },
     {
-      value: tBackWindowOptions("dark"),
-      label: tBackWindowOptions("dark"),
+      value: "dark",
+      label: tSidesWindowOptions("dark"),
     },
   ];
 
@@ -148,10 +148,6 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     { code: "+965", flag: "🇰🇼", country: "Kuwait" },
     { code: "+968", flag: "🇴🇲", country: "Oman" },
     { code: "+974", flag: "🇶🇦", country: "Qatar" },
-    { code: "+1", flag: "🇺🇸", country: "USA" },
-    { code: "+44", flag: "🇬🇧", country: "UK" },
-    { code: "+33", flag: "🇫🇷", country: "France" },
-    { code: "+49", flag: "🇩🇪", country: "Germany" },
   ];
 
   // Generate car years from 1990 to current year
@@ -211,45 +207,76 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   }, [watchFields.third, thirdWindowExtra]);
 
   // Handle submit
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Compose product name/description
-    const make = values.carMake;
-    const model = values.carModel === "other" ? customModel : values.carModel;
-    const type = values.carType;
-    const customerName = values.name;
-    const customerPhone = values.phone;
-    const name = `${make} ${model} (${type})`;
-    const description =
-      `Customer: ${customerName} | Phone: ${customerPhone} | ${t(
-        "carMake"
-      )}: ${make} | ${t("carModel")}: ${model} | ${t("carType")}: ${type} | ${t(
-        "front"
-      )}: ${values.front} | ${t("back")}: ${values.back} | ${t("sides")}: ${
-        values.sides
-      } | ${t("third")}: ${values.third}` +
-      (thirdWindowExtra ? ` | ${t("third")} ${t("removeExtra")}` : "");
-    // Use product data if available, else fallback
-    const id = product?.id ?? Date.now();
-    const price = totalPrice;
-    const image =
-      product?.images && product.images.length > 0
-        ? product.images[0]
-        : "/hero.png";
-    const old_price = product?.old_price ?? undefined;
-    addToCart(id, price, name, image, description, 1, old_price);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      // create user or update
+      const userData = {
+        phone_number: values.phone,
+        name: values.name,
+      };
+      console.log(userData);
 
-    // Reset form after successful submission
-    form.reset();
-    setPhoneNumber("");
-    setSelectedCountryCode("+966");
-    setThirdWindowExtra(true);
-    setCustomModel("");
+      const make = values.carMake;
+      const model = values.carModel === "other" ? customModel : values.carModel;
+      const type = values.carType;
 
-    // Show success message
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
+      // Also add to cart for consistency
+      const customerName = values.name;
+      const customerPhone = values.phone;
+      const name = `${make} ${model} (${type})`;
+
+      // Translate the canonical values for display in description
+      const frontDisplay = tFrontWindowOptions(
+        values.front as keyof typeof tFrontWindowOptions.raw
+      );
+      const backDisplay = tBackWindowOptions(
+        values.back as keyof typeof tBackWindowOptions.raw
+      );
+      const sidesDisplay = tSidesWindowOptions(
+        values.sides as keyof typeof tSidesWindowOptions.raw
+      );
+      const thirdDisplay = values.third
+        ? tSidesWindowOptions(
+            values.third as keyof typeof tSidesWindowOptions.raw
+          )
+        : "";
+
+      const description =
+        `Customer: ${customerName} | Phone: ${customerPhone} | ${t(
+          "carMake"
+        )}: ${make} | ${t("carModel")}: ${model} | ${t(
+          "carType"
+        )}: ${type} | ${t("front")}: ${frontDisplay} (${values.front}) | ${t(
+          "back"
+        )}: ${backDisplay} (${values.back}) | ${t("sides")}: ${sidesDisplay} (${
+          values.sides
+        }) | ${t("third")}: ${thirdDisplay} (${values.third || ""})` +
+        (thirdWindowExtra ? ` | ${t("third")} ${t("removeExtra")}` : "");
+
+      const id = product?.id ?? Date.now();
+      const price = totalPrice;
+      const image =
+        product?.images && product.images.length > 0
+          ? product.images[0]
+          : "/hero.png";
+      const old_price = product?.old_price ?? undefined;
+      addToCart(id, price, name, image, description, 1, old_price);
+
+      // Reset form after successful submission
+      form.reset();
+      setPhoneNumber("");
+      setSelectedCountryCode("+966");
+      setThirdWindowExtra(true);
+      setCustomModel("");
+
+      // Show success message
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      // You might want to show an error message to the user here
+    }
   };
-
   return (
     <div>
       <h2 className="text-2xl font-extrabold justify-center text-center">

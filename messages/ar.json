@@ -77,7 +77,10 @@
     "applying": "جاري التطبيق",
     "apply": "تطبيق",
     "couponPlaceholder": "أدخل رمز القسيمة الخاص بك",
-    "couponApplied": "تم تطبيق القسيمة بنجاح"
+    "couponApplied": "تم تطبيق القسيمة بنجاح",
+    "customer": "العميل",
+    "phoneNumber": "رقم الهاتف",
+    "specification": "التفاصيل"
   },
   "form": {
     "name": "الاسم الكامل",
