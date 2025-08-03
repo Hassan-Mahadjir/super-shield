@@ -9,6 +9,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaTiktok } from "react-icons/fa6";
 
 import { Button } from "./ui/button";
+import ReturnPolicyDialog from "./ReturnPolicyDialog";
 import SocialIcons from "./SocialIcons";
 
 interface MenuItem {
@@ -77,27 +78,27 @@ const Footer = ({
           text: t("frequentlyAskedQuestions", {
             defaultValue: "Frequently Asked Questions",
           }),
-          url: "#",
+          url: "",
         },
         {
           text: t("returnPolicy", { defaultValue: "Return Policy" }),
-          url: "#",
+          url: "",
         },
         {
           text: t("InstallationGuide", { defaultValue: "Installation Guide" }),
-          url: "#",
+          url: "",
         },
         {
           text: t("BusinessFranchises", {
             defaultValue: "Business & Franchises",
           }),
-          url: "#",
+          url: "",
         },
         {
           text: t("salesPoint", {
             defaultValue: "Sales & Installation Points",
           }),
-          url: "#",
+          url: "",
         },
       ],
     },
@@ -183,7 +184,16 @@ const Footer = ({
                       key={linkIdx}
                       className="hover:text-primary font-medium"
                     >
-                      <a href={link.url}>{link.text}</a>
+                      {link.text ===
+                      t("returnPolicy", { defaultValue: "Return Policy" }) ? (
+                        <ReturnPolicyDialog>
+                          <button className="hover:text-primary font-medium">
+                            {link.text}
+                          </button>
+                        </ReturnPolicyDialog>
+                      ) : (
+                        <a href={link.url}>{link.text}</a>
+                      )}
                     </li>
                   ))}
                 </ul>
