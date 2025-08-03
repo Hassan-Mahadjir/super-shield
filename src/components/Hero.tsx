@@ -26,13 +26,24 @@ const Hero = () => {
         {/* Image or Visual Area */}
         <div className="flex justify-end items-end w-full xl:flex-[1.5] h-[400px] sm:h-[500px] xl:h-screen">
           <div className="relative w-full max-w-[90%] h-full z-0">
-            <Image
-              src={"/lucid-red.png"}
-              alt="hero"
-              fill
-              className={`object-contain${isRTL ? " rtl-flip" : ""}`}
-              style={isRTL ? { transform: "scaleX(-1)" } : {}}
-            />
+            <div
+              className={`absolute top-0 h-full w-full transition-all duration-500 ${
+                isRTL
+                  ? "right-[-10%] sm:right-[-10%] md:right-[-10%] xl:right-[-30%]"
+                  : "left-[-10%] sm:left-[-10%] md:left-[-10%] xl:left-[-25%]"
+              }`}
+            >
+              <Image
+                src="/lucid-red.png"
+                alt="hero"
+                fill
+                className={`object-contain transition-transform duration-500 ${
+                  isRTL ? "rtl-flip" : ""
+                } scale-135 sm:scale-145 md:scale-145 xl:scale-[1.6]`}
+                style={isRTL ? { transform: "scaleX(-1)" } : {}}
+              />
+            </div>
+
             <div
               className={`absolute ${
                 isRTL

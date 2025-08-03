@@ -13,19 +13,27 @@ const Us = () => {
       {/* NEW WRAPPER */}
       <div className="flex flex-col xl:flex-row gap-5 mx-auto relative z-0">
         <div className="flex justify-end items-end w-full xl:flex-[1.2] h-[400px] sm:h-[500px] xl:h-screen">
-          <div className="relative w-full max-w-full h-full z-0">
+          <div
+            className={`relative w-full max-w-full h-full z-0${
+              !isRTL
+                ? "right-[-5%] sm:right-[-5%] md:right-[-4%] xl:right-[-8%]"
+                : "left-[-5%] sm:left-[-5%] md:left-[-4%] xl:left-[-8%]"
+            }`}
+          >
             <Image
-              src={"/hero-red.png"}
+              src={"/lucid-red.png"}
               alt="hero"
               fill
-              className={`object-contain${!isRTL ? " rtl-flip" : ""}`}
+              className={`object-contain scale-130  ${
+                !isRTL ? " rtl-flip" : ""
+              }`}
               style={!isRTL ? { transform: "scaleX(-1)" } : {}}
             />
           </div>
         </div>
 
         {/* Text Content */}
-        <div className="flex-1 pt-24 px-4 sm:px-8 md:px-12 lg:px-16">
+        <div className="flex-1 pt-24 sm:pt-[-20] px-4 sm:px-8 md:px-12 lg:px-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
             {t("title", { defaultValue: "Why Choose Us?" })}
           </h1>

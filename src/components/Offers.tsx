@@ -30,6 +30,7 @@ const Offer = () => {
     created_at: string;
     language: string;
     has_offer: boolean;
+    num_sold: number;
   };
 
   useEffect(() => {
@@ -102,7 +103,7 @@ const Offer = () => {
                     isRTL ? "right-2" : "left-2"
                   } bg-white/10 backdrop-blur-md border shadow-md rounded-md text-xs px-3 py-1 rounded z-10`}
                 >
-                  {t("sellMore")} 1000
+                  {t("sellMore")} {product.num_sold}
                 </span>
               </CardHeader>
               <CardContent className="p-4">
