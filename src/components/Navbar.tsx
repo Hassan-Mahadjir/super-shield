@@ -38,28 +38,28 @@ export default function Navbar() {
 
   const sheetOnlyItems = [t("importantLinks"), t("customerService")];
 
-  const nestedSheetContent: Record<string, React.ReactNode> = {
-    [t("importantLinks")]: (
-      <>
-        <Button className="mb-2" variant="outline">
-          Link 1
-        </Button>
-        <Button className="mb-2" variant="outline">
-          Link 2
-        </Button>
-      </>
-    ),
-    [t("customerService")]: (
-      <>
-        <Button className="mb-2" variant="outline">
-          Contact Us
-        </Button>
-        <Button className="mb-2" variant="outline">
-          FAQ
-        </Button>
-      </>
-    ),
-  };
+  // const nestedSheetContent: Record<string, React.ReactNode> = {
+  //   [t("importantLinks")]: (
+  //     <>
+  //       <Button className="mb-2" variant="outline">
+  //         Link 1
+  //       </Button>
+  //       <Button className="mb-2" variant="outline">
+  //         Link 2
+  //       </Button>
+  //     </>
+  //   ),
+  //   [t("customerService")]: (
+  //     <>
+  //       <Button className="mb-2" variant="outline">
+  //         Contact Us
+  //       </Button>
+  //       <Button className="mb-2" variant="outline">
+  //         FAQ
+  //       </Button>
+  //     </>
+  //   ),
+  // };
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 border-b bg-background px-4 py-2 flex items-center justify-between transition-transform duration-300 ${
@@ -124,7 +124,7 @@ export default function Navbar() {
             <SheetTitle className="sr-only">Main Menu</SheetTitle>
             <div className="flex flex-col h-full" dir={isRTL ? "rtl" : "ltr"}>
               <div className="flex items-center gap-2 p-4 border-b">
-                <span className="font-bold text-lg">ACME</span>
+                <span className="font-bold text-lg">{t("logo")}</span>
               </div>
               <div className="flex-1 flex flex-col gap-1 p-4">
                 {menuItems.map((item) => (
@@ -191,7 +191,7 @@ export default function Navbar() {
                 <SheetTitle>{nestedSheet}</SheetTitle>
               </div>
               <div className="p-4">
-                {nestedSheet && nestedSheetContent[nestedSheet]}
+                {/* {nestedSheet && nestedSheetContent[nestedSheet]} */}
               </div>
             </NestedSheet>
           </SheetContent>

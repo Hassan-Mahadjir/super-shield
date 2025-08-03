@@ -36,6 +36,8 @@ type Product = {
   old_price: number;
   has_offer: boolean;
   language: string;
+  elect_cost: number;
+  third_cost: number;
 };
 
 const CustomizedProducts = ({ product }: { product?: Product }) => {
@@ -169,8 +171,8 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     (1990 + i).toString()
   ).reverse();
 
-  const THIRD_WINDOW_EXTRA_COST = 200; // Example extra cost for third window
-  const EXTRA_WINDOW_COST = 150; // Example extra cost for extra window
+  const THIRD_WINDOW_EXTRA_COST = product?.elect_cost || 50; // Example extra cost for third window
+  const EXTRA_WINDOW_COST = product?.third_cost || 49; // Example extra cost for extra window
   const BASE_PRICE = product?.current_price || 0; // Example base price for the product
 
   const form = useForm<z.infer<typeof formSchema>>({

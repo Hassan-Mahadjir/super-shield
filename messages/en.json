@@ -1,4 +1,13 @@
 {
+  "metadata": {
+    "title": "Super Shield - Premium Car Heat Insulation",
+    "description": "Super Shield is a Saudi brand specialized in high-quality car heat insulation rolls with advanced features and competitive prices. Locally made and tested under the sun.",
+    "keywords": "car heat insulation, thermal shield, Saudi Arabia, car protection, heat protection, window tinting",
+    "author": "Super Shield",
+    "ogTitle": "Super Shield - Premium Car Heat Insulation",
+    "ogDescription": "The first thermal shield designed specifically for the harsh Saudi heat. Join over 300,000 satisfied customers.",
+    "ogImage": "/super.png"
+  },
   "Toggle": {
     "dark": "Dark",
     "light": "Light",
@@ -14,7 +23,8 @@
     "salesPoint": "Sales & Installation Points",
     "importantLinks": "Important Links",
     "customerService": "Customer Service",
-    "back": "Back"
+    "back": "Back",
+    "logo": "Super Shield"
   },
   "Footer": {
     "tagline": "Locally made and tested under the sun — the first thermal shield designed specifically for the harsh Saudi heat. Join over 300,000 satisfied customers enjoying coolness and protection.",

@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update-favicon": "node scripts/update-favicon.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

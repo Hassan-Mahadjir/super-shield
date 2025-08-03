@@ -34,3 +34,46 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Metadata and SEO
+
+This project uses a dynamic metadata system that reads from JSON files for internationalization support.
+
+### Metadata Configuration
+
+The metadata is stored in the following files:
+
+- `messages/en.json` - English metadata
+- `messages/ar.json` - Arabic metadata
+
+Each file contains a `metadata` section with:
+
+- `title` - Page title
+- `description` - Page description
+- `keywords` - SEO keywords
+- `author` - Site author
+- `ogTitle`, `ogDescription`, `ogImage` - Open Graph tags
+
+### Updating the Logo/Favicon
+
+To update the logo that appears in browser tabs and bookmarks:
+
+1. Replace the logo file at `public/super.png`
+2. Run the update script:
+   ```bash
+   npm run update-favicon
+   ```
+
+This will automatically update:
+
+- Browser tab favicon
+- Social media share images
+
+### SEO Features
+
+The project includes:
+
+- Dynamic metadata based on locale
+- Open Graph tags for social media sharing
+- Robots.txt for search engine crawling
+- Canonical URLs and language alternates
