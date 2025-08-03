@@ -123,7 +123,10 @@
     "couponApplied": "تم تطبيق القسيمة بنجاح",
     "customer": "العميل",
     "phoneNumber": "رقم الهاتف",
-    "specification": "التفاصيل"
+    "specification": "التفاصيل",
+    "orderReceived": "تم استلام الطلب بنجاح!",
+    "orderProcessing": "جاري معالجة طلبك.",
+    "orderError": "فشل في معالجة الطلب. يرجى المحاولة مرة أخرى."
   },
   "form": {
     "name": "الاسم الكامل",

@@ -9,6 +9,7 @@ export interface CartItem {
   image?: string;
   old_price?: number;
   quantity: number;
+  productId?: number; // Store the original product ID for customized products
 }
 
 interface CartState {
@@ -53,6 +54,7 @@ export const useCart = create<CartState>()(
               description,
               quantity: qty,
               old_price,
+              productId: id, // Store the original product ID
             };
             return { cart: [...state.cart, newItem] };
           }

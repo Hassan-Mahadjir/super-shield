@@ -20,7 +20,14 @@ const defaultImages = [
 
 const ProductImages = ({ images }: ProductImagesProps) => {
   const [index, setIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{
+    id: number;
+    src: string;
+    alt: string;
+  } | null>(null);
   const swiperRef = useRef<any>(null);
+
   // Normalize images to array of {id, src, alt}
   const normalizedImages =
     images && images.length > 0
@@ -35,6 +42,16 @@ const ProductImages = ({ images }: ProductImagesProps) => {
         )
       : defaultImages;
 
+  const handleImageClick = (img: { id: number; src: string; alt: string }) => {
+    setSelectedImage(img);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+  };
+
   return (
     <div className="w-full max-w-xl mx-auto">
       {/* Main Swiper Viewer */}
@@ -47,16 +64,19 @@ const ProductImages = ({ images }: ProductImagesProps) => {
           slidesPerView={1}
           navigation
           pagination={{ clickable: true }}
-          className="w-full h-full"
+          className="w-full h-full "
         >
           {normalizedImages.map((img) => (
             <SwiperSlide key={img.id}>
-              <div className="relative w-full h-full">
+              <div
+                className="relative w-full h-full cursor-pointer"
+                onClick={() => handleImageClick(img)}
+              >
                 <Image
                   src={img.src}
                   alt={img.alt}
                   fill
-                  className="object-contain rounded-md"
+                  className="object-contain rounded-md hover:scale-105 transition-transform duration-200"
                 />
               </div>
             </SwiperSlide>
@@ -86,6 +106,33 @@ const ProductImages = ({ images }: ProductImagesProps) => {
           </div>
         ))}
       </div>
+
+      {/* Modal for enlarged image */}
+      {isModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onClick={closeModal}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-white text-2xl font-bold bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition-all z-10"
+            >
+              ×
+            </button>
+            <div className="w-full h-full flex items-center justify-center">
+              <Image
+                src={selectedImage.src}
+                alt={selectedImage.alt}
+                width={800}
+                height={600}
+                className="max-w-full max-h-full object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

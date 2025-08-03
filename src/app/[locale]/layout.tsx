@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/cart/whatsappButton";
 import { AuthProvider } from "@/components/context/AuthProvider";
 import { getMessages } from "next-intl/server";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -112,6 +113,7 @@ export default async function LocaleLayout({
             <AuthProvider>{children}</AuthProvider>
             <WhatsappButton />
             <Footer />
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

@@ -17,6 +17,8 @@ import { useTheme } from "next-themes";
 import { createOrUpdateUser } from "@/lib/api/users";
 import { createOrder } from "@/lib/api/orders";
 import { useLocale } from "next-intl";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
@@ -29,6 +31,7 @@ const CartPage: React.FC = () => {
 
   const locale = useLocale();
   const theme = useTheme();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -258,10 +261,31 @@ const CartPage: React.FC = () => {
         }
       }
 
-      // Redirect to success page or show success message
-      // You can implement navigation here
+      // Show success message
+      toast.success(
+        t("orderReceived", { defaultValue: "Order received successfully!" }),
+        {
+          description: t("orderProcessing", {
+            defaultValue: "Your order is being processed.",
+          }),
+          duration: 5000,
+        }
+      );
+
+      // Clear the cart
+      clearCart();
+
+      // Redirect to home page after a short delay
+      setTimeout(() => {
+        router.push(`/${locale}`);
+      }, 2000);
     } catch (error) {
       console.error("Error during checkout:", error);
+      toast.error(
+        t("orderError", {
+          defaultValue: "Failed to process order. Please try again.",
+        })
+      );
     }
   };
 

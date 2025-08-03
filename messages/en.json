@@ -122,7 +122,10 @@
     "couponApplied": "Coupon successfully applied",
     "customer": "Customer",
     "phoneNumber": "Phone Number",
-    "specification": "Details"
+    "specification": "Details",
+    "orderReceived": "Order received successfully!",
+    "orderProcessing": "Your order is being processed.",
+    "orderError": "Failed to process order. Please try again."
   },
   "form": {
     "name": "Full Name",
