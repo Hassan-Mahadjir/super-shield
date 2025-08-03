@@ -65,10 +65,10 @@ const Us = () => {
 
                 {/* Text content */}
                 <div className="">
-                  <h3 className="text-lg sm:text-xl font-extrabold">
+                  <h3 className="text-xl sm:text-2xl font-extrabold">
                     {feature.title}
                   </h3>
-                  <p className="text-sm sm:text-base leading-relaxed">
+                  <p className="text-base sm:text-lg leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

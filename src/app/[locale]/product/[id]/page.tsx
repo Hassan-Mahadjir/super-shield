@@ -1,19 +1,32 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabseClient";
 import ProductImages from "@/components/ProductImages";
 import CustomizedProducts from "@/components/CustomizedProducts";
 import { useTheme } from "next-themes";
 import Currency from "@/components/Currency";
 
+type Product = {
+  id: number;
+  created_at: string;
+  name: string;
+  images: string[];
+  description: string;
+  current_price: number;
+  old_price: number;
+  has_offer: boolean;
+  language: string;
+  elect_cost: number;
+  third_cost: number;
+};
+
 const ProductPage = ({
   params,
 }: {
   params: Promise<{ id: string; locale: string }>;
 }) => {
-  const { id, locale } = React.use(params);
-  const [product, setProduct] = useState<any>(null);
+  const { id } = React.use(params);
+  const [product, setProduct] = useState<Product | null>(null);
   const theme = useTheme();
   const isDark = theme.theme === "dark";
   const currencyFill = isDark ? "white" : "black";

@@ -45,6 +45,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   const tFrontWindowOptions = useTranslations("frontWindowOptions");
   const tBackWindowOptions = useTranslations("backWindowOptions");
   const tSidesWindowOptions = useTranslations("sidesWindowOptions");
+  const tFrontSidesWindowOptions = useTranslations("frontsidesWindowOptions");
   const locale = useLocale();
   const theme = useTheme();
   const isDark = theme.theme === "dark";
@@ -52,7 +53,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
 
   const formSchema = z.object({
     name: z.string().min(1, { message: t("name") }),
-    phone: z.string().min(1, { message: t("phone") }),
+    phone: z.string().min(9, { message: t("phone") }),
     carMake: z.string().min(1, { message: t("carMake") }),
     carType: z.string().min(1, { message: t("carType") }),
     carModel: z.string().min(1, { message: t("carModel") }),
@@ -76,14 +77,14 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       placeholder: t("sidesfrontplaceholder"),
     },
     {
-      name: "back",
-      label: t("back"),
-      placeholder: t("backplaceholder"),
-    },
-    {
       name: "sidesback",
       label: t("sidesback"),
       placeholder: t("sidesbackplaceholder"),
+    },
+    {
+      name: "back",
+      label: t("back"),
+      placeholder: t("backplaceholder"),
     },
   ] as const;
 
@@ -152,6 +153,29 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     {
       value: "dark",
       label: tSidesWindowOptions("dark"),
+    },
+  ];
+
+  const frontsidesOptions = [
+    {
+      value: "transparent",
+      label: tFrontSidesWindowOptions("transparent"),
+    },
+    {
+      value: "lightdark",
+      label: tFrontSidesWindowOptions("lightdark"),
+    },
+    {
+      value: "darkShadow",
+      label: tFrontSidesWindowOptions("darkShadow"),
+    },
+    {
+      value: "mediumShadow",
+      label: tFrontSidesWindowOptions("mediumShadow"),
+    },
+    {
+      value: "dark",
+      label: tFrontSidesWindowOptions("dark"),
     },
   ];
 
@@ -474,6 +498,24 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                 </FormItem>
               )}
             />
+            {/* Car Type */}
+            <FormField
+              control={form.control}
+              name="carType"
+              render={({ field }) => (
+                <FormItem className="flex flex-row justify-start">
+                  <FormLabel className="w-1/6">{t("carType")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="w-3/4"
+                      placeholder={t("carTypePlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Car Model (Year) */}
             <FormField
@@ -519,25 +561,6 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
               )}
             />
 
-            {/* Car Type */}
-            <FormField
-              control={form.control}
-              name="carType"
-              render={({ field }) => (
-                <FormItem className="flex flex-row justify-start">
-                  <FormLabel className="w-1/6">{t("carType")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="w-3/4"
-                      placeholder={t("carTypePlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             {/* Tint Options */}
             {windowFields.map((windowField) => {
               // Determine options based on window field
@@ -545,7 +568,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
               if (windowField.name === "front") options = frontOptions;
               else if (windowField.name === "back") options = backOptions;
               else if (windowField.name === "sidesfront")
-                options = sidesOptions;
+                options = frontsidesOptions;
               else if (windowField.name === "sidesback") options = sidesOptions;
 
               return (
@@ -631,7 +654,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                         className="w-3/4"
                         dir={locale === "ar" ? "rtl" : "ltr"}
                       >
-                        <SelectValue placeholder={t("yesorno")} />
+                        <SelectValue placeholder={t("yesornoElec")} />
                       </SelectTrigger>
                       <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
                         {extraOptions.map((option) => (

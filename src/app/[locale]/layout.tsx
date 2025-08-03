@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -11,16 +10,6 @@ import WhatsappButton from "@/components/cart/whatsappButton";
 import { AuthProvider } from "@/components/context/AuthProvider";
 import { getMessages } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export async function generateMetadata({
   params,

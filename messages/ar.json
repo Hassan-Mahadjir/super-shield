@@ -152,15 +152,16 @@
     "removed": "إزالة",
     "other": "أخرى",
     "namePlaceholder": "أدخل اسمك الكامل",
-    "phonePlaceholder": "أدخل رقم هاتفك",
+    "phonePlaceholder": "(966)  أدخل رقم هاتفك",
     "carMakePlaceholder": "أدخل ماركة السيارة (مثل تويوتا، بي إم دبليو)",
     "carModelPlaceholder": "اختر سنة السيارة",
-    "carTypePlaceholder": "أدخل نوع السيارة (مثل سيدان، إس يو في)",
+    "carTypePlaceholder": "أدخل نوع السيارة (مثل افالون,أزيرا )",
     "orderSepcification": "تفاصيل الطلب",
     "addedSuccessfully": "تمت الإضافة بنجاح! تحقق من سلة المشتريات.",
     "yes": "نعم",
     "no": "لا",
-    "yesorno": "نعم أم لا"
+    "yesorno": " نعم  ( إن وجد )",
+    "yesornoElec": "أدخل نعم أو لا"
   },
   "frontWindowOptions": {
     "transparent": "شفاف (مطابق للمرور)",
@@ -168,14 +169,21 @@
   },
   "backWindowOptions": {
     "transparent": "شفاف (مطابق للمرور)",
-    "lightdark": " 00 خفيف العتمة",
+    "lightdark": " 00 خفيف العتمة ( مطابق للمرور )",
     "darkShadow": "01 خفيف بلمسة ظل ( مطابق للمرور )",
-    "mediumShadow": "02 متوسط ظل ( مطابق للمرور )",
+    "mediumShadow": "02 متوسط العتمة",
+    "dark": "03 شديد العتمة"
+  },
+  "frontsidesWindowOptions": {
+    "transparent": "شفاف (مطابق للمرور)",
+    "lightdark": " 00 (مطابق للمرور)خفيف العتمة",
+    "darkShadow": "01 خفيف بلمسة ظل ( مطابق للمرور )",
+    "mediumShadow": "02 متوسط العتمة",
     "dark": "03 شديد العتمة"
   },
   "sidesWindowOptions": {
     "transparent": "شفاف (مطابق للمرور)",
-    "lightdark": " 00 خفيف العتمة",
+    "lightdark": " 00 خفيف العتمة ( مطابق للمرور )",
     "darkShadow": "01 خفيف بلمسة ظل ( مطابق للمرور )",
     "mediumShadow": "02 متوسط ظل ( مطابق للمرور )",
     "dark": "03 شديد العتمة"

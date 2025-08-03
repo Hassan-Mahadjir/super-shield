@@ -38,7 +38,7 @@ export default function LocaleSwitcherSelect({
     setSelectedLocale(newLocale);
     localStorage.setItem("locale", newLocale);
     // Replace the locale in the pathname (assuming /[locale]/... structure)
-    const segments = pathname.split("/");
+    const segments = pathname?.split("/") ?? [];
     if (segments[1]) {
       segments[1] = newLocale;
       const newPath = segments.join("/") || "/";

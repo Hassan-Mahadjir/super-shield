@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { useCart } from "@/store/cart/cart";
+import { useCart, CartItem } from "@/store/cart/cart";
 import { supabase } from "@/lib/supabseClient";
 import { Separator } from "@/components/ui/separator";
 import { validateCoupon } from "@/hook/validateCoupon";
@@ -19,6 +19,15 @@ import { createOrder } from "@/lib/api/orders";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+
+// Define proper types for products from database
+interface Product {
+  id: number;
+  name: string;
+  images: string[];
+  current_price: number;
+  description: string;
+}
 
 const CartPage: React.FC = () => {
   const t = useTranslations("cart");
@@ -40,7 +49,7 @@ const CartPage: React.FC = () => {
   const currencyFill = isDark ? "white" : "black";
 
   // State to hold merged cart items with product info
-  const [cartProducts, setCartProducts] = useState<any[]>([]);
+  const [cartProducts, setCartProducts] = useState<CartItem[]>([]);
 
   // Coupon state(s)
   const [couponCode, setCouponCode] = useState("");
@@ -52,11 +61,6 @@ const CartPage: React.FC = () => {
   // Handle cart items - customized products already have all info, regular products need fetching
   useEffect(() => {
     const processCartItems = async () => {
-      // Separate customized products (which have all info) from regular products
-      const customizedProducts = cart.filter(
-        (item) => item.description && item.description.includes("Customer:")
-      );
-
       // Find regular cart items missing name/price/image
       const regularItems = cart.filter(
         (item) => !item.description || !item.description.includes("Customer:")
@@ -66,7 +70,7 @@ const CartPage: React.FC = () => {
         .filter((item) => !item.name || !item.price || !item.image)
         .map((item) => item.id);
 
-      let fetchedProducts: any[] = [];
+      let fetchedProducts: Product[] = [];
       if (missingIds.length > 0) {
         const { data, error } = await supabase
           .from("product")
@@ -117,12 +121,6 @@ const CartPage: React.FC = () => {
       setDiscount(result.discount);
       setIsPercent(result.isPercent);
       setCouponMessage(t("couponApplied", { defaultValue: "Coupon applied!" }));
-      // Increment coupon usage count in Supabase
-      const { data: couponData, error: couponError } = await supabase
-        .from("coupons")
-        .select("used_count")
-        .eq("code", couponCode)
-        .single();
     } else {
       setDiscount(0);
       setIsPercent(false);
@@ -141,7 +139,7 @@ const CartPage: React.FC = () => {
 
       for (const item of customizedProducts) {
         // Parse customer info from description
-        const descriptionParts = item.description.split(" | ");
+        const descriptionParts = item.description!.split(" | ");
         const customerName = descriptionParts[0]
           .replace("Customer:", "")
           .trim();
@@ -182,11 +180,11 @@ const CartPage: React.FC = () => {
         // Calculate extra cost from the description
         let extraCost = 0;
         if (
-          item.description.includes("third removeExtra") ||
-          item.description.includes("extra removeExtra")
+          item.description!.includes("third removeExtra") ||
+          item.description!.includes("extra removeExtra")
         ) {
           // Extract extra cost from the description
-          const extraCostMatch = item.description.match(/removeExtra: (\d+)/);
+          const extraCostMatch = item.description!.match(/removeExtra: (\d+)/);
           if (extraCostMatch) {
             extraCost = parseInt(extraCostMatch[1]);
           }
@@ -292,7 +290,7 @@ const CartPage: React.FC = () => {
   // Totals
   const totalItems = cartProducts.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = cartProducts.reduce(
-    (sum, i) => sum + i.price * i.quantity,
+    (sum, i) => sum + (i.price || 0) * i.quantity,
     0
   );
   // Discounted total
@@ -325,7 +323,7 @@ const CartPage: React.FC = () => {
                     <Link href={"#"}>
                       <Image
                         src={item.image || "/hero.png"}
-                        alt={item.name}
+                        alt={item.name || "Product"}
                         width={96}
                         height={96}
                         className="object-cover rounded-lg"
@@ -423,7 +421,7 @@ const CartPage: React.FC = () => {
                         </div>
                         <div className="text-left flex">
                           <p className="font-semibold">
-                            {item.price.toFixed(2)}{" "}
+                            {(item.price || 0).toFixed(2)}{" "}
                           </p>
                           <Currency currencyFill={currencyFill} />
                         </div>
