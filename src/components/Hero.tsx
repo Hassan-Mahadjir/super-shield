@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="flex justify-end items-end w-full xl:flex-[1.5] h-[400px] sm:h-[500px] xl:h-screen">
           <div className="relative w-full max-w-[90%] h-full z-0">
             <Image
-              src={"/hero-red.png"}
+              src={"/lucid-red.png"}
               alt="hero"
               fill
               className={`object-contain${isRTL ? " rtl-flip" : ""}`}
