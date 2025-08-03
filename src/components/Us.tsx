@@ -27,45 +27,47 @@ const Us = () => {
         {/* Text Content */}
         <div className="flex-1 pt-24 px-4 sm:px-8 md:px-12 lg:px-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
-            {t("title", { defaultValue: "Why ChooseUs?" })}
+            {t("title", { defaultValue: "Why Choose Us?" })}
           </h1>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
             {[
               {
                 title: t("quality"),
                 description: t("qualityDescription"),
-                icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
               {
                 title: t("installation"),
                 description: t("installationDescription"),
-                icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
               {
                 title: t("protection"),
                 description: t("protectionDescription"),
-                icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
               {
                 title: t("durability"),
                 description: t("durabilityDescription"),
-                icon: <HiBadgeCheck className="!w-12 !h-12" />,
               },
             ].map((feature, idx) => (
-              <div key={idx} className="flex gap-2">
-                {feature.icon}
-                <div>
-                  <h3 className="text-md sm:text-lg font-extrabold ">
+              <div key={idx} className="flex items-start gap-4">
+                {/* Icon wrapper */}
+                <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center text-red-600">
+                  <HiBadgeCheck className="w-full h-full" />
+                </div>
+
+                {/* Text content */}
+                <div className="">
+                  <h3 className="text-lg sm:text-xl font-extrabold">
                     {feature.title}
                   </h3>
-                  <p>{feature.description}</p>
+                  <p className="text-sm sm:text-base leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Image or Visual Area */}
       </div>
     </div>
   );

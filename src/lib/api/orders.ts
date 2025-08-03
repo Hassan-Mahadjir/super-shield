@@ -8,14 +8,16 @@ export interface Order {
   car_model: string;
   car_type: string;
   front_window: string;
+  sidesfront_window: string;
+  sidesback_window: string;
   back_window: string;
-  sides_window: string;
   third_window?: string;
+  extra_window?: string;
+  extra_cost?: number;
   quantity: number;
   price: number;
   discount_amount: number;
   final_price: number;
-  status: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -27,9 +29,12 @@ export interface CreateOrderData {
   car_model: string;
   car_type: string;
   front_window: string;
+  sidesfront_window: string;
+  sidesback_window: string;
   back_window: string;
-  sides_window: string;
   third_window?: string | null;
+  extra_window?: string | null;
+  extra_cost?: number;
   quantity: number;
   price: number;
   discount_amount: number;

@@ -1,5 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import React from "react";
+import { TypingAnimation } from "./magicui/typing-animation";
 
 const Agencies = () => {
   const locale = useLocale();
@@ -7,8 +8,10 @@ const Agencies = () => {
   const t = useTranslations("common");
   return (
     <div>
-      <div className="mt-5 mx-5 my-10">
-        <p className="text-center my-5 font-bold text-3xl">{t("agencies")}</p>
+      <div className="mt-5 mx-5">
+        <TypingAnimation className="text-center my-5 font-bold text-4xl">
+          {t("agencies")}
+        </TypingAnimation>
         <div className="overflow-hidden w-full py-8">
           <div
             className={`flex gap-8 animate-scroll-x items-center`}
@@ -18,7 +21,7 @@ const Agencies = () => {
               } 15s linear infinite`,
             }}
           >
-            {[
+            {/* {[
               "super.png",
               "vercel.svg",
               "window.svg",
@@ -33,7 +36,7 @@ const Agencies = () => {
                 className="h-16 w-auto object-contain"
                 style={{ minWidth: "100px" }}
               />
-            ))}
+            ))} */}
           </div>
         </div>
         <style>{`

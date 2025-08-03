@@ -54,11 +54,7 @@ const Offer = () => {
   );
 
   if (filteredProducts.length === 0) {
-    return (
-      <div className="text-center my-10">
-        No offers found for this language.
-      </div>
-    );
+    return <div className="text-center my-10">{t("nooffer")}</div>;
   }
 
   const handleAddtoCart = (product: Product) => {

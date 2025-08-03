@@ -9,9 +9,9 @@ export default function WhatsappButton() {
       href="https://wa.me/218918358796"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-4 right-4 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg"
+      className="fixed bottom-4 right-4 z-50 bg-red-500 hover:bg-red-600 text-white p-4 rounded-full shadow-lg w-16 h-16 flex items-center justify-center"
     >
-      <FaWhatsapp />
+      <FaWhatsapp width={40} height={40} className="w-full h-full" />
     </Link>
   );
 }

@@ -22,9 +22,12 @@ interface EmailTemplateProps {
   carModel: string;
   carType: string;
   frontWindow: string;
+  sidesfrontWindow: string;
+  sidesbackWindow: string;
   backWindow: string;
-  sidesWindow: string;
   thirdWindow: string;
+  extraWindow: string;
+  extraCost: number;
 }
 
 const EmailTemplateAr: React.FC<EmailTemplateProps> = ({
@@ -40,9 +43,12 @@ const EmailTemplateAr: React.FC<EmailTemplateProps> = ({
   carModel,
   carType,
   frontWindow,
+  sidesfrontWindow,
+  sidesbackWindow,
   backWindow,
-  sidesWindow,
   thirdWindow,
+  extraWindow,
+  extraCost,
 }) => {
   const parseCustomizedProduct = (description: string) => {
     if (!description.includes("Customer:")) return null;
@@ -283,6 +289,30 @@ const EmailTemplateAr: React.FC<EmailTemplateProps> = ({
                           <td style={{ padding: "4px 8px" }}>{frontWindow}</td>
                         </tr>
                       )}
+                      {sidesfrontWindow && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            الزجاج الجانبي الأمامي
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>
+                            {sidesfrontWindow}
+                          </td>
+                        </tr>
+                      )}
+                      {sidesbackWindow && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            الزجاج الجانبي الخلفي
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>
+                            {sidesbackWindow}
+                          </td>
+                        </tr>
+                      )}
                       {backWindow && (
                         <tr>
                           <td
@@ -293,24 +323,36 @@ const EmailTemplateAr: React.FC<EmailTemplateProps> = ({
                           <td style={{ padding: "4px 8px" }}>{backWindow}</td>
                         </tr>
                       )}
-                      {sidesWindow && (
-                        <tr>
-                          <td
-                            style={{ padding: "4px 8px", fontWeight: "bold" }}
-                          >
-                            الزجاج الجانبي
-                          </td>
-                          <td style={{ padding: "4px 8px" }}>{sidesWindow}</td>
-                        </tr>
-                      )}
                       {thirdWindow && (
                         <tr>
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            الزجاج الثالث
+                            زجاج الصف الثالث
                           </td>
                           <td style={{ padding: "4px 8px" }}>{thirdWindow}</td>
+                        </tr>
+                      )}
+                      {extraWindow && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            القص الالكتروني
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>{extraWindow}</td>
+                        </tr>
+                      )}
+                      {extraCost > 0 && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            التكلفة الإضافية
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>
+                            {extraCost.toFixed(2)} ريال
+                          </td>
                         </tr>
                       )}
                     </tbody>

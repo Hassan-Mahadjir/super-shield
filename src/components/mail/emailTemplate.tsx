@@ -22,9 +22,12 @@ interface EmailTemplateProps {
   carModel: string;
   carType: string;
   frontWindow: string;
+  sidesfrontWindow: string;
+  sidesbackWindow: string;
   backWindow: string;
-  sidesWindow: string;
   thirdWindow: string;
+  extraWindow: string;
+  extraCost: number;
 }
 
 const EmailTemplate: React.FC<EmailTemplateProps> = ({
@@ -40,9 +43,12 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
   carModel,
   carType,
   frontWindow,
+  sidesfrontWindow,
+  sidesbackWindow,
   backWindow,
-  sidesWindow,
   thirdWindow,
+  extraWindow,
+  extraCost,
 }) => {
   const parseCustomizedProduct = (description: string) => {
     if (!description.includes("Customer:")) return null;
@@ -295,14 +301,28 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                           <td style={{ padding: "4px 8px" }}>{backWindow}</td>
                         </tr>
                       )}
-                      {sidesWindow && (
+                      {sidesfrontWindow && (
                         <tr>
                           <td
                             style={{ padding: "4px 8px", fontWeight: "bold" }}
                           >
-                            Sides Window:
+                            Sides Front Window:
                           </td>
-                          <td style={{ padding: "4px 8px" }}>{sidesWindow}</td>
+                          <td style={{ padding: "4px 8px" }}>
+                            {sidesfrontWindow}
+                          </td>
+                        </tr>
+                      )}
+                      {sidesbackWindow && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            Sides Back Window:
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>
+                            {sidesbackWindow}
+                          </td>
                         </tr>
                       )}
                       {thirdWindow && (
@@ -313,6 +333,28 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                             Third Window:
                           </td>
                           <td style={{ padding: "4px 8px" }}>{thirdWindow}</td>
+                        </tr>
+                      )}
+                      {extraWindow && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            Extra Window:
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>{extraWindow}</td>
+                        </tr>
+                      )}
+                      {extraCost > 0 && (
+                        <tr>
+                          <td
+                            style={{ padding: "4px 8px", fontWeight: "bold" }}
+                          >
+                            Extra Cost:
+                          </td>
+                          <td style={{ padding: "4px 8px" }}>
+                            SAR {extraCost.toFixed(2)}
+                          </td>
                         </tr>
                       )}
                     </tbody>

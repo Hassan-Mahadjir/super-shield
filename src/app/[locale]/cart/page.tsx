@@ -163,16 +163,31 @@ const CartPage: React.FC = () => {
         const carType = descriptionParts[4]?.split(":")[1]?.trim() || "";
 
         // Parse window details - extract only canonical values for database storage
-        // The description format is: Customer | Phone | Car Make | Car Model | Car Type | Front Window | Back Window | Sides Window | Third Window
+        // The description format is: Customer | Phone | Car Make | Car Model | Car Type | Front Window | Sides Front Window | Sides Back Window | Back Window | Third Window | Extra Window
         // So window parts start from index 5
         const windowParts = descriptionParts.slice(5);
 
         // Store the full window option string (including code and rule text) for database storage
         // Store only the value after the colon (e.g., "00 Light Tint (lightdark)") for database storage
         const frontWindow = windowParts[0]?.split(":")[1]?.trim() || "";
-        const backWindow = windowParts[1]?.split(":")[1]?.trim() || "";
-        const sidesWindow = windowParts[2]?.split(":")[1]?.trim() || "";
-        const thirdWindow = windowParts[3]?.split(":")[1]?.trim() || "";
+        const sidesfrontWindow = windowParts[1]?.split(":")[1]?.trim() || "";
+        const sidesbackWindow = windowParts[2]?.split(":")[1]?.trim() || "";
+        const backWindow = windowParts[3]?.split(":")[1]?.trim() || "";
+        const thirdWindow = windowParts[4]?.split(":")[1]?.trim() || "";
+        const extraWindow = windowParts[5]?.split(":")[1]?.trim() || "";
+
+        // Calculate extra cost from the description
+        let extraCost = 0;
+        if (
+          item.description.includes("third removeExtra") ||
+          item.description.includes("extra removeExtra")
+        ) {
+          // Extract extra cost from the description
+          const extraCostMatch = item.description.match(/removeExtra: (\d+)/);
+          if (extraCostMatch) {
+            extraCost = parseInt(extraCostMatch[1]);
+          }
+        }
 
         // Create order
         const orderData = {
@@ -182,9 +197,12 @@ const CartPage: React.FC = () => {
           car_model: carModel,
           car_type: carType,
           front_window: frontWindow,
+          sidesfront_window: sidesfrontWindow,
+          sidesback_window: sidesbackWindow,
           back_window: backWindow,
-          sides_window: sidesWindow,
           third_window: thirdWindow || null,
+          extra_window: extraWindow || null,
+          extra_cost: extraCost,
           quantity: item.quantity,
           price: item.price,
           discount_amount: discountAmount,
@@ -224,9 +242,12 @@ const CartPage: React.FC = () => {
             carModel,
             carType,
             frontWindow,
+            sidesfrontWindow,
+            sidesbackWindow,
             backWindow,
-            sidesWindow,
             thirdWindow,
+            extraWindow,
+            extraCost,
             locale,
           };
           await fetch("/api/send-order-mail", {

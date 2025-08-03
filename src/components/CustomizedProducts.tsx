@@ -51,13 +51,15 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   const formSchema = z.object({
     name: z.string().min(1, { message: t("name") }),
     phone: z.string().min(1, { message: t("phone") }),
-    front: z.string().min(1, { message: t("frontplaceholder") }),
-    back: z.string().min(1, { message: t("backplaceholder") }),
-    sides: z.string().min(1, { message: t("sidesplaceholder") }),
-    third: z.string().optional(),
     carMake: z.string().min(1, { message: t("carMake") }),
-    carModel: z.string().min(1, { message: t("carModel") }),
     carType: z.string().min(1, { message: t("carType") }),
+    carModel: z.string().min(1, { message: t("carModel") }),
+    front: z.string().min(1, { message: t("frontplaceholder") }),
+    sidesfront: z.string().min(1, { message: t("sidesfrontplaceholder") }),
+    sidesback: z.string().min(1, { message: t("sidesbackplaceholder") }),
+    back: z.string().min(1, { message: t("backplaceholder") }),
+    third: z.string().optional(),
+    extra: z.string().optional(),
   });
 
   const windowFields = [
@@ -67,19 +69,19 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       placeholder: t("frontplaceholder"),
     },
     {
+      name: "sidesfront",
+      label: t("sidesfront"),
+      placeholder: t("sidesfrontplaceholder"),
+    },
+    {
       name: "back",
       label: t("back"),
       placeholder: t("backplaceholder"),
     },
     {
-      name: "sides",
-      label: t("sides"),
-      placeholder: t("sidesplaceholder"),
-    },
-    {
-      name: "third",
-      label: t("third"),
-      placeholder: t("thirdplaceholder"),
+      name: "sidesback",
+      label: t("sidesback"),
+      placeholder: t("sidesbackplaceholder"),
     },
   ] as const;
 
@@ -114,6 +116,17 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     {
       value: "dark",
       label: tBackWindowOptions("dark"),
+    },
+  ];
+
+  const extraOptions = [
+    {
+      value: "yes",
+      label: t("yes"),
+    },
+    {
+      value: "no",
+      label: t("no"),
     },
   ];
 
@@ -157,6 +170,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   ).reverse();
 
   const THIRD_WINDOW_EXTRA_COST = 200; // Example extra cost for third window
+  const EXTRA_WINDOW_COST = 150; // Example extra cost for extra window
   const BASE_PRICE = product?.current_price || 0; // Example base price for the product
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -164,20 +178,23 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     defaultValues: {
       name: "",
       phone: "",
-      front: "",
-      back: "",
-      sides: "",
-      third: "",
       carMake: "",
-      carModel: "",
       carType: "",
+      carModel: "",
+      front: "",
+      sidesfront: "",
+      sidesback: "",
+      back: "",
+      third: "",
+      extra: "",
     },
   });
 
   const addToCart = useCart((state) => state.addToCart);
 
-  // State for extra cost toggle
+  // State for extra cost toggles
   const [thirdWindowExtra, setThirdWindowExtra] = useState(true);
+  const [extraWindowExtra, setExtraWindowExtra] = useState(true);
 
   // State for custom model
   const [customModel, setCustomModel] = useState("");
@@ -197,14 +214,23 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
   const { totalPrice, extraCost } = useMemo(() => {
     let price = BASE_PRICE;
     let extra = 0;
-    // If third window is selected and extra is enabled, add extra cost
-    if (watchFields.third && thirdWindowExtra) {
+
+    if (watchFields.third === "yes" && thirdWindowExtra) {
       extra += THIRD_WINDOW_EXTRA_COST;
     }
-    // You can add more logic for other options here
+
+    if (watchFields.extra === "yes" && extraWindowExtra) {
+      extra += EXTRA_WINDOW_COST;
+    }
+
     price += extra;
     return { totalPrice: price, extraCost: extra };
-  }, [watchFields.third, thirdWindowExtra]);
+  }, [
+    watchFields.third,
+    watchFields.extra,
+    thirdWindowExtra,
+    extraWindowExtra,
+  ]);
 
   // Handle submit
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -232,14 +258,14 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       const backDisplay = tBackWindowOptions(
         values.back as keyof typeof tBackWindowOptions.raw
       );
-      const sidesDisplay = tSidesWindowOptions(
-        values.sides as keyof typeof tSidesWindowOptions.raw
+      const sidesfrontDisplay = tSidesWindowOptions(
+        values.sidesfront as keyof typeof tSidesWindowOptions.raw
       );
-      const thirdDisplay = values.third
-        ? tSidesWindowOptions(
-            values.third as keyof typeof tSidesWindowOptions.raw
-          )
-        : "";
+      const sidesbackDisplay = tSidesWindowOptions(
+        values.sidesback as keyof typeof tSidesWindowOptions.raw
+      );
+      const thirdDisplay = values.third === "yes" ? t("yes") : t("no");
+      const extraDisplay = values.extra === "yes" ? t("yes") : t("no");
 
       const description =
         `Customer: ${customerName} | Phone: ${customerPhone} | ${t(
@@ -247,11 +273,18 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
         )}: ${make} | ${t("carModel")}: ${model} | ${t(
           "carType"
         )}: ${type} | ${t("front")}: ${frontDisplay} | ${t(
+          "sidesfront"
+        )}: ${sidesfrontDisplay} | ${t("sidesback")}: ${sidesbackDisplay} | ${t(
           "back"
-        )}: ${backDisplay} | ${t("sides")}: ${sidesDisplay} | ${t(
-          "third"
-        )}: ${thirdDisplay}` +
-        (thirdWindowExtra ? ` | ${t("third")} ${t("removeExtra")}` : "");
+        )}: ${backDisplay} | ${t("third")}: ${thirdDisplay} | ${t(
+          "extra"
+        )}: ${extraDisplay}` +
+        (thirdWindowExtra && values.third === "yes"
+          ? ` | ${t("third")} ${t("removeExtra")}`
+          : "") +
+        (extraWindowExtra && values.extra === "yes"
+          ? ` | ${t("extra")} ${t("removeExtra")}`
+          : "");
 
       const id = product?.id ?? Date.now();
       const price = totalPrice;
@@ -267,6 +300,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       setPhoneNumber("");
       setSelectedCountryCode("+966");
       setThirdWindowExtra(true);
+      setExtraWindowExtra(true);
       setCustomModel("");
 
       // Show success message
@@ -277,6 +311,43 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       // You might want to show an error message to the user here
     }
   };
+
+  // Handle third window extra cost removal
+  const handleThirdWindowExtraRemoval = () => {
+    setThirdWindowExtra(false);
+    // Don't reset the form value, let user keep their yes/no selection
+  };
+
+  // Handle extra window extra cost removal
+  const handleExtraWindowExtraRemoval = () => {
+    setExtraWindowExtra(false);
+    // Don't reset the form value, let user keep their yes/no selection
+  };
+
+  // Handle third window selection change
+  const handleThirdWindowChange = (value: string) => {
+    form.setValue("third", value);
+    // If user selects "no", remove the extra cost
+    if (value === "no") {
+      setThirdWindowExtra(false);
+    } else if (value === "yes") {
+      // If user selects "yes", enable the extra cost
+      setThirdWindowExtra(true);
+    }
+  };
+
+  // Handle extra window selection change
+  const handleExtraWindowChange = (value: string) => {
+    form.setValue("extra", value);
+    // If user selects "no", remove the extra cost
+    if (value === "no") {
+      setExtraWindowExtra(false);
+    } else if (value === "yes") {
+      // If user selects "yes", enable the extra cost
+      setExtraWindowExtra(true);
+    }
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-extrabold justify-center text-center">
@@ -285,7 +356,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       <div className="flex flex-col mt-4">
         {/* Price Display */}
         <div className="mb-4">
-          {!thirdWindowExtra && watchFields.third && (
+          {!thirdWindowExtra && watchFields.third === "yes" && (
             <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
               <span>
                 {t("third")} {t("removeExtra")} {t("removed")}
@@ -296,6 +367,22 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                 variant="ghost"
                 className="px-2 py-0 h-6 text-xs"
                 onClick={() => setThirdWindowExtra(true)}
+              >
+                {t("add")}
+              </Button>
+            </div>
+          )}
+          {!extraWindowExtra && watchFields.extra === "yes" && (
+            <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
+              <span>
+                {t("extra")} {t("removeExtra")} {t("removed")}
+              </span>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="px-2 py-0 h-6 text-xs"
+                onClick={() => setExtraWindowExtra(true)}
               >
                 {t("add")}
               </Button>
@@ -356,7 +443,9 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                         value={phoneNumber}
                         onChange={(e) => {
                           setPhoneNumber(e.target.value);
-                          field.onChange(selectedCountryCode + e.target.value);
+                          field.onChange(
+                            selectedCountryCode + "-" + e.target.value
+                          );
                         }}
                       />
                     </div>
@@ -365,57 +454,6 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                 </FormItem>
               )}
             />
-
-            {/* Tint Options */}
-            {windowFields.map((windowField) => {
-              // Determine options based on window field
-              let options: { value: string; label: string }[] = [];
-              if (windowField.name === "front") options = frontOptions;
-              else if (windowField.name === "back") options = backOptions;
-              else if (windowField.name === "sides") options = sidesOptions;
-              else if (windowField.name === "third") options = backOptions; // or a separate thirdOptions if needed
-              return (
-                <FormField
-                  key={windowField.name}
-                  control={form.control}
-                  name={windowField.name}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row justify-start">
-                      <FormLabel className="w-1/6">
-                        {windowField.label}
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger
-                            className="w-3/4"
-                            dir={locale === "ar" ? "rtl" : "ltr"}
-                          >
-                            <SelectValue
-                              placeholder={windowField.placeholder}
-                            />
-                          </SelectTrigger>
-                          <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
-                            {options.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              );
-            })}
-
             {/* Car Make */}
             <FormField
               control={form.control}
@@ -497,6 +535,116 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                 </FormItem>
               )}
             />
+
+            {/* Tint Options */}
+            {windowFields.map((windowField) => {
+              // Determine options based on window field
+              let options: { value: string; label: string }[] = [];
+              if (windowField.name === "front") options = frontOptions;
+              else if (windowField.name === "back") options = backOptions;
+              else if (windowField.name === "sidesfront")
+                options = sidesOptions;
+              else if (windowField.name === "sidesback") options = sidesOptions;
+
+              return (
+                <FormField
+                  key={windowField.name}
+                  control={form.control}
+                  name={windowField.name}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row justify-start">
+                      <FormLabel className="w-1/6">
+                        {windowField.label}
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger
+                            className="w-3/4"
+                            dir={locale === "ar" ? "rtl" : "ltr"}
+                          >
+                            <SelectValue
+                              placeholder={windowField.placeholder}
+                            />
+                          </SelectTrigger>
+                          <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
+                            {options.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+
+            {/* third window sides */}
+            <FormField
+              control={form.control}
+              name="third"
+              render={({ field }) => (
+                <FormItem className="flex flex-row justify-start">
+                  <FormLabel className="w-1/6">{t("third")}</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={handleThirdWindowChange}>
+                      <SelectTrigger
+                        className="w-3/4"
+                        dir={locale === "ar" ? "rtl" : "ltr"}
+                      >
+                        <SelectValue placeholder={t("yesorno")} />
+                      </SelectTrigger>
+                      <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
+                        {extraOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* extra window sides */}
+            <FormField
+              control={form.control}
+              name="extra"
+              render={({ field }) => (
+                <FormItem className="flex flex-row justify-start">
+                  <FormLabel className="w-1/6">{t("extra")}</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={handleExtraWindowChange}>
+                      <SelectTrigger
+                        className="w-3/4"
+                        dir={locale === "ar" ? "rtl" : "ltr"}
+                      >
+                        <SelectValue placeholder={t("yesorno")} />
+                      </SelectTrigger>
+                      <SelectContent dir={locale === "ar" ? "rtl" : "ltr"}>
+                        {extraOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="flex items-center gap-2">
               <span className="font-semibold">{t("totalPrice")}: </span>
               <span className="text-lg flex items-center gap-1">
@@ -516,30 +664,54 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
 
             {extraCost > 0 && (
               <div className="text-sm text-red-600 flex items-center gap-2 mt-1">
-                <span>
-                  + {t("third")} {t("removeExtra")}: {THIRD_WINDOW_EXTRA_COST}{" "}
-                  {/* Replace R.S with SVG */}
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      verticalAlign: "middle",
-                      width: 24,
-                      height: 24,
-                    }}
-                  >
-                    <Currency currencyFill={currencyFill} />
+                {watchFields.third === "yes" && thirdWindowExtra && (
+                  <span>
+                    + {t("third")} {t("removeExtra")}: {THIRD_WINDOW_EXTRA_COST}{" "}
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        verticalAlign: "middle",
+                        width: 24,
+                        height: 24,
+                      }}
+                    >
+                      <Currency currencyFill={currencyFill} />
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="px-2 py-0 h-6 text-xs ml-2"
+                      onClick={handleThirdWindowExtraRemoval}
+                    >
+                      {t("removeExtra")}
+                    </Button>
                   </span>
-                </span>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="px-2 py-0 h-6 text-xs"
-                  onClick={() => setThirdWindowExtra(false)}
-                  disabled={!thirdWindowExtra}
-                >
-                  {t("removeExtra")}
-                </Button>
+                )}
+                {watchFields.extra === "yes" && extraWindowExtra && (
+                  <span>
+                    + {t("extra")} {t("removeExtra")}: {EXTRA_WINDOW_COST}{" "}
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        verticalAlign: "middle",
+                        width: 24,
+                        height: 24,
+                      }}
+                    >
+                      <Currency currencyFill={currencyFill} />
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="px-2 py-0 h-6 text-xs ml-2"
+                      onClick={handleExtraWindowExtraRemoval}
+                    >
+                      {t("removeExtra")}
+                    </Button>
+                  </span>
+                )}
               </div>
             )}
             <Button
