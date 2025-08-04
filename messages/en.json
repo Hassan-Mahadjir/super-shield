@@ -130,6 +130,8 @@
   "form": {
     "name": "Full Name",
     "phone": "Phone Number",
+    "phoneInvalid": "Please enter a valid phone number with country code (e.g., +966 55 123 283)",
+    "phoneRequired": "Phone number is required",
     "carMake": "Car Make",
     "carModel": "Car Model",
     "carType": "Car Type",
@@ -151,7 +153,7 @@
     "removed": "Removed",
     "other": "Other",
     "namePlaceholder": "Enter your full name",
-    "phonePlaceholder": "Enter your phone number",
+    "phonePlaceholder": "Enter your phone number (e.g., 55 123 283)",
     "carMakePlaceholder": "Enter car make (e.g. Toyota, BMW)",
     "carModelPlaceholder": "Select car year",
     "carTypePlaceholder": "Enter car type (e.g. Sedan, SUV)",

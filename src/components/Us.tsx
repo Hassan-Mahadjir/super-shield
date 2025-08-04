@@ -21,7 +21,7 @@ const Us = () => {
             }`}
           >
             <Image
-              src={"/lucid-red.png"}
+              src={"/lucid-car-gpt.png"}
               alt="hero"
               fill
               className={`object-contain scale-130  ${

@@ -131,6 +131,8 @@
   "form": {
     "name": "الاسم الكامل",
     "phone": "رقم الهاتف",
+    "phoneInvalid": "يرجى إدخال رقم هاتف صحيح مع رمز البلد (مثل +966 55 123 283)",
+    "phoneRequired": "رقم الهاتف مطلوب",
     "carMake": "شركة السيارة",
     "carModel": "موديل السيارة",
     "carType": "نوع السيارة",
@@ -152,7 +154,7 @@
     "removed": "إزالة",
     "other": "أخرى",
     "namePlaceholder": "أدخل اسمك الكامل",
-    "phonePlaceholder": "(966)  أدخل رقم هاتفك",
+    "phonePlaceholder": "أدخل رقم هاتفك (****-***-55)",
     "carMakePlaceholder": "أدخل ماركة السيارة (مثل تويوتا، بي إم دبليو)",
     "carModelPlaceholder": "اختر سنة السيارة",
     "carTypePlaceholder": "أدخل نوع السيارة (مثل افالون,أزيرا )",

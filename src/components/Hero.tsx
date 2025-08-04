@@ -34,7 +34,7 @@ const Hero = () => {
               }`}
             >
               <Image
-                src="/lucid-red.png"
+                src="/lucid-car-gpt.png"
                 alt="hero"
                 fill
                 className={`object-contain transition-transform duration-500 ${

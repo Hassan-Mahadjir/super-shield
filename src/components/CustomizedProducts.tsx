@@ -20,6 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 import { useCart } from "@/store/cart/cart";
 import { useLocale, useTranslations } from "next-intl";
@@ -53,7 +54,29 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
 
   const formSchema = z.object({
     name: z.string().min(1, { message: t("name") }),
-    phone: z.string().min(9, { message: t("phone") }),
+    phone: z
+      .string()
+      .min(1, { message: t("phoneRequired") })
+      .refine(
+        (value) => {
+          if (!value) return false;
+          // The value format is "countryCode-phoneNumber" (e.g., "+966-56229839281")
+          const [countryCode, phoneNumber] = value.split("-");
+          if (!countryCode || !phoneNumber) return false;
+
+          // Combine them for validation
+          const fullNumber = countryCode + phoneNumber;
+
+          // Basic length check for common formats
+          const digitsOnly = phoneNumber.replace(/\D/g, "");
+          if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+            return false;
+          }
+
+          return isValidPhoneNumber(fullNumber);
+        },
+        { message: t("phoneInvalid") }
+      ),
     carMake: z.string().min(1, { message: t("carMake") }),
     carType: z.string().min(1, { message: t("carType") }),
     carModel: z.string().min(1, { message: t("carModel") }),
@@ -187,7 +210,38 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     { code: "+965", flag: "🇰🇼", country: "Kuwait" },
     { code: "+968", flag: "🇴🇲", country: "Oman" },
     { code: "+974", flag: "🇶🇦", country: "Qatar" },
+    { code: "+20", flag: "🇪🇬", country: "Egypt" },
+    { code: "+212", flag: "🇲🇦", country: "Morocco" },
+    { code: "+216", flag: "🇹🇳", country: "Tunisia" },
+    { code: "+213", flag: "🇩🇿", country: "Algeria" },
+    { code: "+1", flag: "🇺🇸", country: "USA/Canada" },
+    { code: "+44", flag: "🇬🇧", country: "UK" },
+    { code: "+33", flag: "🇫🇷", country: "France" },
+    { code: "+49", flag: "🇩🇪", country: "Germany" },
+    { code: "+39", flag: "🇮🇹", country: "Italy" },
+    { code: "+34", flag: "🇪🇸", country: "Spain" },
+    { code: "+91", flag: "🇮🇳", country: "India" },
+    { code: "+86", flag: "🇨🇳", country: "China" },
+    { code: "+81", flag: "🇯🇵", country: "Japan" },
+    { code: "+82", flag: "🇰🇷", country: "South Korea" },
+    { code: "+61", flag: "🇦🇺", country: "Australia" },
+    { code: "+64", flag: "🇳🇿", country: "New Zealand" },
   ];
+
+  // Format phone number for display (55-123-283 format)
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, "");
+
+    // Format as 55-123-283
+    if (digits.length <= 2) {
+      return digits;
+    } else if (digits.length <= 5) {
+      return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    } else {
+      return `${digits.slice(0, 2)}-${digits.slice(2, 5)}-${digits.slice(5)}`;
+    }
+  };
 
   // Generate car years from 1990 to current year
   const currentYear = new Date().getFullYear();
@@ -447,7 +501,11 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                     <div className="flex w-3/4 gap-2">
                       <Select
                         value={selectedCountryCode}
-                        onValueChange={setSelectedCountryCode}
+                        onValueChange={(value) => {
+                          setSelectedCountryCode(value);
+                          // Update the form field with new country code
+                          field.onChange(value + "-" + phoneNumber);
+                        }}
                       >
                         <SelectTrigger className="w-1/3">
                           <SelectValue />
@@ -466,12 +524,17 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                       <Input
                         className="w-2/3"
                         placeholder={t("phonePlaceholder")}
-                        value={phoneNumber}
+                        value={formatPhoneNumber(phoneNumber)}
                         onChange={(e) => {
-                          setPhoneNumber(e.target.value);
-                          field.onChange(
-                            selectedCountryCode + "-" + e.target.value
-                          );
+                          // Remove formatting for storage
+                          const rawValue = e.target.value.replace(/[-\s]/g, "");
+                          setPhoneNumber(rawValue);
+                          field.onChange(selectedCountryCode + "-" + rawValue);
+                        }}
+                        onBlur={(e) => {
+                          // Format on blur for better UX
+                          const rawValue = e.target.value.replace(/[-\s]/g, "");
+                          setPhoneNumber(rawValue);
                         }}
                       />
                     </div>

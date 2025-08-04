@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { useCart } from "@/store/cart/cart";
 import { supabase } from "../lib/supabseClient";
+import Currency from "./Currency";
 
 const HeatInsulator = () => {
   const { theme } = useTheme();
@@ -76,10 +77,11 @@ const HeatInsulator = () => {
   const isRTL = locale === "ar";
   return (
     <div className="mt-5 mx-5">
-      <p className="text-center my-5 font-bold text-2xl">
+      <p className="text-center my-8 font-extrabold text-2xl sm:text-2xl md:text-3xl lg:text-4xl">
         {t("heatInsulator")}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center justify-items-center">
+
+      <div className="w-full flex flex-wrap justify-center gap-4">
         {filteredProducts.map((product: Product, idx: number) => (
           <Card
             key={product.id || idx}
@@ -125,9 +127,12 @@ const HeatInsulator = () => {
                     <p className="line-through text-gray-400">
                       {product.old_price}
                     </p>
-                    <span className="font-bold text-xl text-green-600">
+                    <span className="font-bold text-xl text-red-600">
                       {product.current_price}
                     </span>
+                    <Currency
+                      currencyFill={theme === "dark" ? "white" : "black"}
+                    />
                   </div>
                 </div>
                 <div>
