@@ -13,7 +13,35 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendOrderMail(orderDetails: any) {
+interface OrderDetails {
+  orderNumber: string;
+  customerName: string;
+  customerPhone: string;
+  orderItems: Array<{
+    id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    description?: string;
+  }>;
+  totalPrice: number;
+  discountAmount: number;
+  finalTotal: number;
+  orderDate: string;
+  carMake: string;
+  carModel: string;
+  carType: string;
+  frontWindow: string;
+  sidesfrontWindow: string;
+  sidesbackWindow: string;
+  backWindow: string;
+  thirdWindow?: string;
+  extraWindow?: string;
+  extraCost: number;
+  locale: string;
+}
+
+export async function sendOrderMail(orderDetails: OrderDetails) {
   let html;
 
   if (orderDetails.locale === "ar") {

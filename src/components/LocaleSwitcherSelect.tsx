@@ -5,7 +5,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
@@ -32,7 +31,7 @@ export default function LocaleSwitcherSelect({
     if (storedLocale && storedLocale !== selectedLocale) {
       setSelectedLocale(storedLocale);
     }
-  }, []);
+  }, [selectedLocale]);
 
   const handleValueChange = (newLocale: string) => {
     setSelectedLocale(newLocale);
@@ -48,9 +47,10 @@ export default function LocaleSwitcherSelect({
 
   // Extract locale values and labels from children (option elements)
   const localeOptions = Array.isArray(children)
-    ? children.map((child: any) => ({
-        value: child.props.value,
-        label: child.props.children,
+    ? children.map((child: React.ReactElement) => ({
+        value: (child as React.ReactElement<{ value: string }>).props.value,
+        label: (child as React.ReactElement<{ children: string }>).props
+          .children,
       }))
     : [];
 

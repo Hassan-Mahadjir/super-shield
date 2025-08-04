@@ -20,7 +20,7 @@ export default function LocaleSwitcher({
     if (storedLocale && storedLocale !== defaultLocale) {
       setDefaultLocale(storedLocale);
     }
-  }, [locale]);
+  }, [locale, defaultLocale]);
 
   const languageNames: Record<string, { en: string; ar: string }> = {
     en: { en: "English", ar: "الإنجليزية" },

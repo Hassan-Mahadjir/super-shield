@@ -1,7 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
-import { Button } from "./ui/button";
 
 interface ServiceCardProps {
   name: string;
@@ -13,7 +10,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ name, comment, rating }) => {
   return (
     <div className="flex flex-col items-center rounded-xl px-4 py-10 space-y-4 w-64 border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <p className="text-center font-bold text-lg">{name}</p>
-      <p className="text-sm italic">"{comment}"</p>
+      <p className="text-sm italic">&ldquo;{comment}&rdquo;</p>
       <div className="flex justify-center gap-1">
         {Array.from({ length: 5 }).map((_, i) => (
           <span

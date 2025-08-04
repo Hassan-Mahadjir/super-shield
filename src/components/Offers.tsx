@@ -19,7 +19,6 @@ const Offer = () => {
   const t = useTranslations("common");
   const locale = useLocale();
   const isRTL = locale === "ar";
-  const [products, setProducts] = useState<any[] | null>(null);
 
   type Product = {
     id: number;
@@ -33,7 +32,7 @@ const Offer = () => {
     has_offer: boolean;
     num_sold: number;
   };
-
+  const [products, setProducts] = useState<Product[] | null>(null);
   useEffect(() => {
     const fetchProducts = async () => {
       const { data, error } = await supabase.from("product").select("*");

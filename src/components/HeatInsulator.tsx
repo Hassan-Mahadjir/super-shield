@@ -19,7 +19,6 @@ const HeatInsulator = () => {
   const { addToCart } = useCart();
   const t = useTranslations("common");
   const locale = useLocale();
-  const [products, setProducts] = useState<any[] | null>(null);
 
   type Product = {
     id: number;
@@ -32,6 +31,7 @@ const HeatInsulator = () => {
     num_sold: number;
     language: string; // Added language field
   };
+  const [products, setProducts] = useState<Product[] | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {

@@ -25,8 +25,8 @@ interface EmailTemplateProps {
   sidesfrontWindow: string;
   sidesbackWindow: string;
   backWindow: string;
-  thirdWindow: string;
-  extraWindow: string;
+  thirdWindow?: string;
+  extraWindow?: string;
   extraCost: number;
 }
 
@@ -159,7 +159,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           Order Details
         </h3>
 
-        {orderItems.map((item, index) => {
+        {orderItems.map((item) => {
           const customizedInfo = item.description
             ? parseCustomizedProduct(item.description)
             : null;

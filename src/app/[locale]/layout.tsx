@@ -23,7 +23,18 @@ export async function generateMetadata({
   }
 
   const messages = await getMessages({ locale });
-  const metadata = messages.metadata as any;
+
+  interface MetadataMessages {
+    title: string;
+    description: string;
+    keywords: string;
+    author: string;
+    ogTitle: string;
+    ogDescription: string;
+    ogImage: string;
+  }
+
+  const metadata = messages.metadata as MetadataMessages;
 
   return {
     title: metadata.title,

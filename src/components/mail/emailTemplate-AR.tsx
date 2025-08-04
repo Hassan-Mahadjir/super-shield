@@ -25,8 +25,8 @@ interface EmailTemplateProps {
   sidesfrontWindow: string;
   sidesbackWindow: string;
   backWindow: string;
-  thirdWindow: string;
-  extraWindow: string;
+  thirdWindow?: string;
+  extraWindow?: string;
   extraCost: number;
 }
 

@@ -310,6 +310,9 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
     watchFields.extra,
     thirdWindowExtra,
     extraWindowExtra,
+    BASE_PRICE,
+    EXTRA_WINDOW_COST,
+    THIRD_WINDOW_EXTRA_COST,
   ]);
 
   // Handle submit
@@ -680,7 +683,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
             <FormField
               control={form.control}
               name="third"
-              render={({ field }) => (
+              render={({}) => (
                 <FormItem className="flex flex-row justify-start">
                   <FormLabel className="w-1/6">{t("third")}</FormLabel>
                   <FormControl>
@@ -708,7 +711,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
             <FormField
               control={form.control}
               name="extra"
-              render={({ field }) => (
+              render={({}) => (
                 <FormItem className="flex flex-row justify-start">
                   <FormLabel className="w-1/6">{t("extra")}</FormLabel>
                   <FormControl>

@@ -9,19 +9,16 @@ import {
 } from "./ui/sheet";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { ModeToggle } from "./modeToggle";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import CartButton from "./cart/cartButton";
 import { Link } from "@/i18n/navigation";
 
-const sheetOnlyItems = ["Sheet Item 1", "Sheet Item 2", "Sheet Item 3"];
-
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [nestedSheet, setNestedSheet] = useState<string | null>(null); // Track which nested sheet is open
-  const [scrolledDown, setScrolledDown] = useState(false); // Track scroll direction
-  const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
+  const [scrolledDown] = useState(false); // Track scroll direction
   const locale = useLocale();
   const isRTL = locale === "ar";
 
