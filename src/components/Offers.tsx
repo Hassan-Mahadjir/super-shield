@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { useCart } from "@/store/cart/cart";
 import { supabase } from "../lib/supabseClient";
+import OffersSkeleton from "./OffersSkeleton";
 
 const Offer = () => {
   const { theme } = useTheme();
@@ -47,7 +48,7 @@ const Offer = () => {
   }, []);
 
   if (!products) {
-    return <div className="text-center my-10">Loading...</div>;
+    return <OffersSkeleton />;
   }
 
   const filteredProducts = products.filter(

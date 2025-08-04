@@ -5,6 +5,7 @@ import ProductImages from "@/components/ProductImages";
 import CustomizedProducts from "@/components/CustomizedProducts";
 import { useTheme } from "next-themes";
 import Currency from "@/components/Currency";
+import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 
 type Product = {
   id: number;
@@ -43,7 +44,7 @@ const ProductPage = ({
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div>Loading...</div>;
+  if (!product) return <ProductPageSkeleton />;
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">

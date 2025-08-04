@@ -12,6 +12,7 @@ import { useTheme } from "next-themes";
 import { useCart } from "@/store/cart/cart";
 import { supabase } from "../lib/supabseClient";
 import Currency from "./Currency";
+import HeatInsulatorSkeleton from "./HeatInsulatorSkeleton";
 
 const HeatInsulator = () => {
   const { theme } = useTheme();
@@ -46,7 +47,7 @@ const HeatInsulator = () => {
   }, []);
 
   if (!products) {
-    return <div className="text-center my-10">Loading...</div>;
+    return <HeatInsulatorSkeleton />;
   }
 
   const filteredProducts = products.filter(
@@ -54,11 +55,7 @@ const HeatInsulator = () => {
   );
 
   if (filteredProducts.length === 0) {
-    return (
-      <div className="text-center my-10">
-        No products found for this language.
-      </div>
-    );
+    return <div className="text-center my-10">{t("noProducts")}</div>;
   }
 
   console.log("Products:", products[0]);

@@ -19,6 +19,7 @@ import { createOrder, updateProductSales } from "@/lib/api/orders";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import CartPageSkeleton from "@/components/CartPageSkeleton";
 
 // Define proper types for products from database
 interface Product {
@@ -317,8 +318,7 @@ const CartPage: React.FC = () => {
   const finalTotal = Math.max(totalPrice - discountAmount, 0);
 
   if (!mounted) {
-    // Optionally, you can return a skeleton or null while mounting
-    return null;
+    return <CartPageSkeleton />;
   }
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">

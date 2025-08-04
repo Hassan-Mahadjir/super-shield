@@ -131,28 +131,28 @@ const Footer = ({
           <SocialIcons
             icons={[
               {
-                href: "https://instagram.com",
+                href: "https://instagram.com/supershield.sa/",
                 label: t("instagram", { defaultValue: "Instagram" }),
                 icon: <FaInstagram className="!w-6 !h-6" />,
                 hoverClass: "hover:text-pink-500",
               },
               {
-                href: "https://snapchat.com",
+                href: "https://www.snapchat.com/add/supershield.sa",
                 label: t("snapchat", { defaultValue: "Snapchat" }),
                 icon: <FaSnapchatGhost className="!w-6 !h-6" />,
                 hoverClass: "hover:text-yellow-400",
               },
               {
-                href: "https://twitter.com",
+                href: "https://x.com/supershield.sa",
                 label: t("x", { defaultValue: "X" }),
                 icon: <FaXTwitter className="!w-6 !h-6" />,
                 hoverClass: "hover:text-blue-400",
               },
               {
-                href: "https://tiktok.com",
+                href: "https://www.tiktok.com/@supershield.sa",
                 label: t("tiktok", { defaultValue: "TikTok" }),
                 icon: <FaTiktok className="!w-6 !h-6" />,
-                hoverClass: "hover:text-black",
+                hoverClass: "hover:text-white",
               },
             ]}
           />

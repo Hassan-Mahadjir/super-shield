@@ -95,7 +95,8 @@
     "customers": "Customer Reviews",
     "sellMore": "More than sold ",
     "addToCart": "Add to Cart",
-    "nooffer": "No offers at the moment"
+    "nooffer": "No offers at the moment",
+    "noProducts": "No products found for this language."
   },
   "Us": {
     "title": "Why Choose Super Shield?",
