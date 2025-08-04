@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 import Currency from "@/components/Currency";
 import { useTheme } from "next-themes";
 import { createOrUpdateUser } from "@/lib/api/users";
-import { createOrder } from "@/lib/api/orders";
+import { createOrder, updateProductSales } from "@/lib/api/orders";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -27,6 +27,7 @@ interface Product {
   images: string[];
   current_price: number;
   description: string;
+  num_sold: number;
 }
 
 const CartPage: React.FC = () => {
@@ -74,7 +75,7 @@ const CartPage: React.FC = () => {
       if (missingIds.length > 0) {
         const { data, error } = await supabase
           .from("product")
-          .select("id, name, images, current_price, description")
+          .select("id, name, images, current_price, description,num_sold")
           .in("id", missingIds);
         if (!error && data) {
           fetchedProducts = data;
@@ -213,19 +214,37 @@ const CartPage: React.FC = () => {
         const order = await createOrder(orderData);
         if (!order) {
           console.error("Failed to create order for item:", item.id);
-        } else if (discount > 0 && couponCode) {
-          // Increment coupon usage count in Supabase only after successful order creation
-          const { data: couponData, error: couponError } = await supabase
-            .from("coupons")
-            .select("used_count")
-            .eq("code", couponCode)
-            .single();
-          if (!couponError && couponData) {
-            const newCount = (couponData.used_count || 0) + 1;
-            await supabase
+        } else {
+          // Update product num_sold after successful order creation
+          const productIdToUpdate = item.productId || item.id;
+          if (productIdToUpdate) {
+            // For both regular and customized products, update num_sold
+            const updateSuccess = await updateProductSales(
+              productIdToUpdate,
+              item.quantity
+            );
+            if (!updateSuccess) {
+              console.error(
+                "Failed to update product sales for item:",
+                item.id
+              );
+            }
+          }
+
+          if (discount > 0 && couponCode) {
+            // Increment coupon usage count in Supabase only after successful order creation
+            const { data: couponData, error: couponError } = await supabase
               .from("coupons")
-              .update({ used_count: newCount })
-              .eq("code", couponCode);
+              .select("used_count")
+              .eq("code", couponCode)
+              .single();
+            if (!couponError && couponData) {
+              const newCount = (couponData.used_count || 0) + 1;
+              await supabase
+                .from("coupons")
+                .update({ used_count: newCount })
+                .eq("code", couponCode);
+            }
           }
         }
         if (order) {

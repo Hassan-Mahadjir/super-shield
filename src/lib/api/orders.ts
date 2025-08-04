@@ -96,3 +96,47 @@ export async function getOrdersByUser(phoneNumber: string): Promise<Order[]> {
     return [];
   }
 }
+
+// Update product num_sold when order is completed
+export async function updateProductSales(
+  productId: number,
+  quantity: number
+): Promise<boolean> {
+  try {
+    console.log(`Updating product ${productId} sales by ${quantity}`);
+
+    // First, get the current num_sold value
+    const { data: currentProduct, error: fetchError } = await supabase
+      .from("product")
+      .select("num_sold")
+      .eq("id", productId)
+      .single();
+
+    if (fetchError) {
+      console.error("Error fetching current product sales:", fetchError);
+      return false;
+    }
+
+    const currentNumSold = currentProduct?.num_sold || 0;
+    const newNumSold = currentNumSold + quantity;
+
+    // Update the num_sold field
+    const { error: updateError } = await supabase
+      .from("product")
+      .update({ num_sold: newNumSold })
+      .eq("id", productId);
+
+    if (updateError) {
+      console.error("Error updating product sales:", updateError);
+      return false;
+    }
+
+    console.log(
+      `Successfully updated product ${productId} sales from ${currentNumSold} to ${newNumSold}`
+    );
+    return true;
+  } catch (error) {
+    console.error("Unexpected error in updateProductSales:", error);
+    return false;
+  }
+}
