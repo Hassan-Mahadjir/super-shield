@@ -33,7 +33,7 @@ const Us = () => {
         </div>
 
         {/* Text Content */}
-        <div className="flex-1 pt-24 sm:pt-[-20] px-4 sm:px-8 md:px-12 lg:px-16">
+        <div className="flex-1 pt-[-10] sm:pt-[-20] px-4 sm:px-8 md:px-12 lg:px-16">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
             {t("title", { defaultValue: "Why Choose Us?" })}
           </h1>
