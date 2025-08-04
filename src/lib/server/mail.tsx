@@ -57,7 +57,10 @@ export async function sendOrderMail(orderDetails: OrderDetails) {
   const mailOptions = {
     from: process.env.GOOGLE_MAIL_USER,
     to: process.env.EMAIL_RECEIVER, // your email or customer email
-    subject: `Order Confirmation #${orderDetails.orderNumber}`,
+    subject:
+      orderDetails.locale === "ar"
+        ? `الطلب #${orderDetails.orderNumber}`
+        : `${orderDetails.orderNumber}# Order`,
     html,
   };
 

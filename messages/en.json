@@ -223,6 +223,7 @@
     "discount": "Discount",
     "thanks": "Thank you for choosing Super Shield!",
     "contactSoon": "We will contact you soon to schedule your appointment.",
-    "noReply": "This is an automated message. Please do not reply."
+    "noReply": "This is an automated message. Please do not reply.",
+    "confirmemail": "Order Received"
   }
 }
