@@ -26,6 +26,7 @@ interface CartState {
   removeFromCart: (id: number) => void;
   increaseQuantity: (id: number) => void;
   decreaseQuantity: (id: number) => void;
+  updateCartItem: (id: number, updates: Partial<CartItem>) => void;
   clearCart: () => void;
 }
 
@@ -102,6 +103,13 @@ export const useCart = create<CartState>()(
             item.id === id
               ? { ...item, quantity: Math.max(1, item.quantity - 1) }
               : item
+          ),
+        })),
+
+      updateCartItem: (id, updates) =>
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.id === id ? { ...item, ...updates } : item
           ),
         })),
 

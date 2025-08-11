@@ -26,7 +26,7 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
         className="flex flex-row items-center gap-5 perspective-1000 justify-center animate-scroll-x"
         style={{
           animation: `${
-            isRTL ? "scroll-x-rtl" : "scroll-x-ltr"
+            isRTL ? "scroll-x-ltr" : "scroll-x-rtl"
           } 35s linear infinite`,
         }}
       >

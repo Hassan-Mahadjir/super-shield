@@ -35,28 +35,6 @@ export default function Navbar() {
 
   const sheetOnlyItems = [t("importantLinks"), t("customerService")];
 
-  // const nestedSheetContent: Record<string, React.ReactNode> = {
-  //   [t("importantLinks")]: (
-  //     <>
-  //       <Button className="mb-2" variant="outline">
-  //         Link 1
-  //       </Button>
-  //       <Button className="mb-2" variant="outline">
-  //         Link 2
-  //       </Button>
-  //     </>
-  //   ),
-  //   [t("customerService")]: (
-  //     <>
-  //       <Button className="mb-2" variant="outline">
-  //         Contact Us
-  //       </Button>
-  //       <Button className="mb-2" variant="outline">
-  //         FAQ
-  //       </Button>
-  //     </>
-  //   ),
-  // };
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 border-b bg-background px-4 py-2 flex items-center justify-between transition-transform duration-300 ${
@@ -74,24 +52,25 @@ export default function Navbar() {
       <div className="flex items-center gap-2 my-4">
         <Link href="/">
           <Image
-            src={"/super.png"}
+            src={"/logo.png"}
             alt="super shield logo"
-            width={90}
-            height={90}
+            width={130}
+            height={130}
           />
         </Link>
       </div>
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2">
-        {/* Show LocaleSwitcher only on md and up */}
-        <div className="hidden md:block">
-          <LocaleSwitcher />
-        </div>
         {/* Show CartButton only on mobile (block on small, hidden on md+) */}
         <div className="block md:hidden">
           <CartButton />
         </div>
+        {/* Show LocaleSwitcher on all screen sizes */}
+        <div className="block">
+          <LocaleSwitcher width="w-full" />
+        </div>
+
         {/* <ModeToggle /> */}
         {/* Sheet trigger always visible */}
         <Sheet open={open} onOpenChange={setOpen}>

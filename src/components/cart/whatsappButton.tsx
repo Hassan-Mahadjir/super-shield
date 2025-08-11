@@ -1,11 +1,10 @@
-// components/WhatsappButton.tsx
 "use client";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 
 export default function WhatsappButton() {
-  const phoneNumber = "905338672837";
-  const message = "Hello, I need some help";
+  const phoneNumber = "966544136338";
+  const message = "السلام عليكم👋 "; // Arabic message
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 

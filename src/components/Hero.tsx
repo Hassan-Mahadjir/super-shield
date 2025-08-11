@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -6,59 +7,38 @@ const Hero = () => {
   const locale = useLocale();
   const isRTL = locale === "ar";
   const t = useTranslations("Hero");
+
   return (
-    <div className="relative overflow-hidden">
-      {/* NEW WRAPPER */}
-      <div className="flex flex-col xl:flex-row gap-5 mx-auto relative z-0">
-        {/* Text Content */}
-        <div className="flex-1 pt-24 px-4 sm:px-8 md:px-12 lg:px-16">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
-            {t("title", { defaultValue: "The Ultimate Thermal Shield" })}
-          </h1>
-          <p className="text-base sm:text-lg font-light mt-5">
-            {t("description", {
-              defaultValue:
-                "Super Shield is a Saudi brand specialized in providing high-quality thermal insulation rolls for vehicles, offering superior insulation properties at competitive prices.",
-            })}
-          </p>
-        </div>
+    <div
+      className="relative w-full overflow-hidden "
+      style={{ aspectRatio: "16 / 9" }}
+    >
+      {/* Background Image (full height without cropping or spacing) */}
+      <Image
+        src="/hero-section-car.jpg"
+        alt="hero"
+        fill
+        className={`object-cover object-bottom w-full h-full ${
+          isRTL ? "rtl-flip" : ""
+        }`}
+        style={!isRTL ? { transform: "scaleX(-1)" } : {}}
+        priority
+      />
 
-        {/* Image or Visual Area */}
-        <div className="flex justify-end items-end w-full xl:flex-[1.5] h-[400px] sm:h-[500px] xl:h-screen">
-          <div className="relative w-full max-w-[90%] h-full z-0">
-            <div
-              className={`absolute top-0 h-full w-full transition-all duration-500 ${
-                isRTL
-                  ? "right-[-10%] sm:right-[-10%] md:right-[-10%] xl:right-[-30%]"
-                  : "left-[-10%] sm:left-[-10%] md:left-[-10%] xl:left-[-25%]"
-              }`}
-            >
-              <Image
-                src="/lucid-car-gpt.png"
-                alt="hero"
-                fill
-                className={`object-contain transition-transform duration-500 ${
-                  isRTL ? "rtl-flip" : ""
-                } scale-135 sm:scale-145 md:scale-145 xl:scale-[1.6]`}
-                style={isRTL ? { transform: "scaleX(-1)" } : {}}
-              />
-            </div>
+      {/* Optional dark overlay */}
+      <div className="absolute inset-0 bg-black/10 z-10" />
 
-            <div
-              className={`absolute ${
-                isRTL
-                  ? "left-[-25%] xl:left-[-35%]"
-                  : "right-[-25%] xl:right-[-35%]"
-              } xl:top-[1rem] w-full h-[590px] xl:h-screen bg-repeat-round -z-10 overflow-hidden`}
-              style={
-                isRTL
-                  ? {
-                      backgroundImage: "url('/hero-red-bg.png')",
-                      transform: "scaleX(-1)",
-                    }
-                  : { backgroundImage: "url('/hero-red-bg.png')" }
-              }
-            />
+      {/* Text overlay */}
+      <div className="relative z-10 text-center flex items-center mt-[-5%] h-[10vh] sm:h-[25vh] md:h-[15vh] lg:h-[18vh] xl:h-[45vh]">
+        <div className="container mx-auto px-4 sm:px-4 md:px-8 lg:px-12">
+          {/* <div className="max-w-2xl"></div> */}
+          <div className="flex h-screen w-full items-center justify-center">
+            <span className="absolute mx-auto py-4 flex border w-fit bg-gradient-to-r blur-xl from-blue-500 to-blue-600 bg-clip-text text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl box-content font-extrabold text-transparent text-center select-none">
+              {t("title", { defaultValue: "The Ultimate Thermal Shield" })}
+            </span>
+            <h1 className="relative top-0 w-fit h-auto py-4 justify-center flex items-center text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white text-center select-auto">
+              {t("title", { defaultValue: "The Ultimate Thermal Shield" })}
+            </h1>
           </div>
         </div>
       </div>

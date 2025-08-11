@@ -140,7 +140,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             <strong>Name:</strong> {customerName}
           </p>
           <p style={{ margin: "5px 0", fontSize: "14px" }}>
-            <strong>Phone:</strong> {customerPhone}
+            <strong>Phone:</strong>{" "}
+            <span dir="ltr" style={{ display: "inline-block" }}>
+              {customerPhone}
+            </span>
           </p>
         </div>
       </div>
@@ -228,7 +231,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                       <strong>Customer:</strong> {customizedInfo.customerName}
                     </p>
                     <p style={{ margin: "3px 0", fontSize: "13px" }}>
-                      <strong>Phone:</strong> {customizedInfo.phoneNumber}
+                      <strong>Phone:</strong>{" "}
+                      <span dir="ltr" style={{ display: "inline-block" }}>
+                        {customizedInfo.phoneNumber}
+                      </span>
                     </p>
                   </div>
 

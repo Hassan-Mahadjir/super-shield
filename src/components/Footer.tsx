@@ -55,7 +55,7 @@ const Footer = ({
   const isRTL = locale === "ar";
 
   const defaultLogo = {
-    src: "/super.png",
+    src: "/logo.png",
     alt: t("logoAlt", { defaultValue: "Super Shield Logo" }),
     title: t("logoTitle", { defaultValue: "Super Shield Company" }),
     url: "#",
@@ -157,7 +157,7 @@ const Footer = ({
             ]}
           />
         </div>
-        <div className="border-t pt-8 grid grid-cols-1 gap-5 lg:grid-cols-5 mx-auto px-4 sm:px-6 lg:px-4">
+        <div className="border-t pt-8 grid grid-cols-1 gap-5 lg:grid-cols-4 mx-auto px-4 sm:px-6 lg:px-4">
           <div
             className={`col-span-1 ${
               isRTL ? "ml-8" : "mr-8"
@@ -167,12 +167,12 @@ const Footer = ({
               <Image
                 src={finalLogo.src}
                 alt={finalLogo.alt}
-                width={80}
-                height={80}
+                width={150}
+                height={150}
               />
-              <p>{finalLogo.title}</p>
+              {/* <p>{finalLogo.title}</p> */}
             </div>
-            <p className="mt-4 font-medium">{finalTagline}</p>
+            <p className="font-medium pt-[-50px]">{finalTagline}</p>
           </div>
           <div>
             {finalMenuItems.map((section, sectionIdx) => (
@@ -204,12 +204,14 @@ const Footer = ({
           <div>
             <h3 className="mb-4 font-bold">{t("customerService")}</h3>
             <Button variant="ghost" size="default" aria-label="WhatsApp">
-              <FaWhatsapp className="!w-8 !h-8" />
+              <a href="https://wa.me/966544136338" target="_blank">
+                <FaWhatsapp className="!w-8 !h-8" />
+              </a>
               {t("contactUs", { defaultValue: "Contact Us" })}
             </Button>
           </div>
           {/* VAT */}
-          <div className="mb-4 lg:mb-0">
+          {/* <div className="mb-4 lg:mb-0">
             <div className="flex items-center gap-2 lg:justify-start">
               <Image
                 src={finalVAT.src}
@@ -219,10 +221,10 @@ const Footer = ({
               />
               <div className="gap-2">
                 <p>{finalVAT.title}</p>
-                <p>{"09876543211234"}</p>
+                <p>{process.env.VAT_NUMBER}</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center  mx-auto px-4 sm:px-6 lg:px-4">
           <p>{finalCopyright}</p>

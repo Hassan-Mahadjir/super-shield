@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, Edit } from "lucide-react";
 import { useCart, CartItem } from "@/store/cart/cart";
 import { supabase } from "@/lib/supabseClient";
 import { Separator } from "@/components/ui/separator";
@@ -20,14 +20,21 @@ import { useLocale } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import CartPageSkeleton from "@/components/CartPageSkeleton";
+import CartEditForm from "@/components/CartEditForm";
 
 // Define proper types for products from database
 interface Product {
   id: number;
+  created_at: string;
   name: string;
   images: string[];
-  current_price: number;
   description: string;
+  current_price: number;
+  old_price: number;
+  has_offer: boolean;
+  language: string;
+  elect_cost: number;
+  third_cost: number;
   num_sold: number;
 }
 
@@ -38,6 +45,7 @@ const CartPage: React.FC = () => {
   const removeFromCart = useCart((state) => state.removeFromCart);
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
+  const updateCartItem = useCart((state) => state.updateCartItem);
   const clearCart = useCart((state) => state.clearCart);
 
   const locale = useLocale();
@@ -53,12 +61,21 @@ const CartPage: React.FC = () => {
   // State to hold merged cart items with product info
   const [cartProducts, setCartProducts] = useState<CartItem[]>([]);
 
+  // Edit mode state
+  const [editingItemId, setEditingItemId] = useState<number | null>(null);
+
+  // Product data for edit form
+  const [productData, setProductData] = useState<Product | null>(null);
+
   // Coupon state(s)
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isPercent, setIsPercent] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
+
+  // Checkout loading state
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   // Handle cart items - customized products already have all info, regular products need fetching
   useEffect(() => {
@@ -76,7 +93,7 @@ const CartPage: React.FC = () => {
       if (missingIds.length > 0) {
         const { data, error } = await supabase
           .from("product")
-          .select("id, name, images, current_price, description,num_sold")
+          .select("*")
           .in("id", missingIds);
         if (!error && data) {
           fetchedProducts = data;
@@ -103,16 +120,113 @@ const CartPage: React.FC = () => {
             image:
               found.images && found.images.length > 0
                 ? found.images[0]
-                : "/hero.png",
+                : "/lucid-car-gpt.png",
             description: found.description,
           };
         }
         return item;
       });
-      setCartProducts(merged);
+
+      // Only update cartProducts if there are actual changes to avoid overriding manual updates
+      setCartProducts((prevCartProducts) => {
+        // Check if the merged cart is different from current cartProducts
+        const hasChanges =
+          merged.length !== prevCartProducts.length ||
+          merged.some((item, index) => {
+            const prevItem = prevCartProducts[index];
+            return (
+              !prevItem ||
+              item.id !== prevItem.id ||
+              item.name !== prevItem.name ||
+              item.price !== prevItem.price ||
+              item.description !== prevItem.description
+            );
+          });
+
+        if (hasChanges) {
+          return merged;
+        }
+        return prevCartProducts;
+      });
     };
     processCartItems();
   }, [cart]);
+
+  // Handle edit item
+  const handleEditItem = async (itemId: number) => {
+    setEditingItemId(itemId);
+
+    // Fetch product data for the edit form
+    const item = cartProducts.find((item) => item.id === itemId);
+    if (item) {
+      // For regular products, use the item.id as productId
+      // For customized products, use the productId if available
+      const productIdToFetch = item.productId || item.id;
+
+      const { data, error } = await supabase
+        .from("product")
+        .select("*")
+        .eq("id", productIdToFetch)
+        .single();
+
+      if (!error && data) {
+        setProductData(data);
+      } else {
+        console.error("Failed to fetch product data:", error);
+        // Set default product data if fetch fails
+        setProductData({
+          id: productIdToFetch,
+          created_at: "",
+          name: item.name || "",
+          images: [item.image || ""],
+          description: item.description || "",
+          current_price: item.price || 0,
+          old_price: 0,
+          has_offer: false,
+          language: locale,
+          elect_cost: 50,
+          third_cost: 49,
+          num_sold: 0,
+        });
+      }
+    }
+  };
+
+  // Handle save edited item
+  const handleSaveEditedItem = (updatedItem: CartItem) => {
+    console.log("CartPage - Saving updated item:", {
+      id: updatedItem.id,
+      name: updatedItem.name,
+      price: updatedItem.price,
+      description: updatedItem.description,
+    });
+
+    // Update the cart store with the updated item
+    updateCartItem(updatedItem.id, {
+      name: updatedItem.name,
+      price: updatedItem.price,
+      description: updatedItem.description,
+    });
+
+    // Update the cartProducts state to reflect the changes immediately
+    setCartProducts((prevCartProducts) => {
+      const updated = prevCartProducts.map((item) =>
+        item.id === updatedItem.id ? { ...item, ...updatedItem } : item
+      );
+      console.log("CartPage - Updated cartProducts:", updated);
+      return updated;
+    });
+
+    setEditingItemId(null);
+    toast.success(
+      t("itemUpdated", { defaultValue: "Item updated successfully!" })
+    );
+  };
+
+  // Handle cancel edit
+  const handleCancelEdit = () => {
+    setEditingItemId(null);
+  };
 
   // Coupon apply handler
   const handleApplyCoupon = async () => {
@@ -133,6 +247,7 @@ const CartPage: React.FC = () => {
 
   // Handle checkout and save order
   const handleCheckout = async () => {
+    setCheckoutLoading(true);
     try {
       // For each customized product in cart, create an order
       const customizedProducts = cartProducts.filter(
@@ -293,17 +408,18 @@ const CartPage: React.FC = () => {
       // Clear the cart
       clearCart();
 
-      // Redirect to home page after a short delay
+      // Redirect to home page after a shorter delay
       setTimeout(() => {
         router.push(`/${locale}`);
-      }, 2000);
+      }, 1000);
     } catch (error) {
-      console.error("Error during checkout:", error);
       toast.error(
         t("orderError", {
           defaultValue: "Failed to process order. Please try again.",
         })
       );
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
@@ -335,148 +451,204 @@ const CartPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-4">
           {cartProducts.map((item) => {
             return (
-              <Card key={item.id} className="p-4">
-                <div className="flex gap-4">
-                  {/* Image */}
-                  <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Link href={"#"}>
-                      <Image
-                        src={item.image || "/hero.png"}
-                        alt={item.name || "Product"}
-                        width={96}
-                        height={96}
-                        className="object-cover rounded-lg"
-                      />
-                    </Link>
-                  </div>
-                  <div className="flex-1 flex flex-col justify-between">
-                    {/* Name / Color / Price / Size */}
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-lg">{item.name}</h3>
-                          {item.description && (
-                            <div className="text-xs text-gray-500 mt-1 space-y-1">
-                              {item.description.includes("Customer:") ? (
-                                // For customized products, parse and display customer info nicely
-                                (() => {
-                                  const parts = item.description.split(" | ");
+              <div key={item.id}>
+                <Card className="p-4">
+                  <div className="flex gap-4">
+                    {/* Image */}
+                    <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <Link href={"#"}>
+                        <Image
+                          src={item.image || "/lucid-car-gpt.png"}
+                          alt={item.name || "Product"}
+                          width={96}
+                          height={96}
+                          className="object-cover rounded-lg"
+                        />
+                      </Link>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      {/* Name / Color / Price / Size */}
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold text-lg">
+                              {item.name}
+                            </h3>
+                            {item.description && (
+                              <div className="text-xs text-gray-500 mt-1 space-y-1">
+                                {item.description.includes("Customer:") ? (
+                                  // For customized products, parse and display customer info nicely
+                                  (() => {
+                                    const parts = item.description.split(" | ");
 
-                                  // Extract customer name and phone from the first two parts
-                                  const customerName = parts[0]
-                                    .replace("Customer:", "")
-                                    .trim();
-                                  const phoneNumber = parts[1]
-                                    ? parts[1].replace("Phone:", "").trim()
-                                    : "";
+                                    // Extract customer name and phone from the first two parts
+                                    const customerName = parts[0]
+                                      .replace("Customer:", "")
+                                      .trim();
+                                    const phoneNumber = parts[1]
+                                      ? parts[1].replace("Phone:", "").trim()
+                                      : "";
 
-                                  // Extract specification parts (skip customer and phone)
-                                  const specificationParts = parts.slice(2);
+                                    // Extract specification parts (skip customer and phone)
+                                    const specificationParts = parts.slice(2);
 
-                                  return (
-                                    <>
-                                      <div className="space-y-1">
-                                        <div className="font-medium">
-                                          <span className="font-semibold text-white">
-                                            {t("customer")}:
-                                          </span>{" "}
-                                          {customerName}
-                                        </div>
-                                        <div className="font-medium">
-                                          <span className="font-semibold text-white">
-                                            {t("phoneNumber")}:
-                                          </span>{" "}
-                                          {phoneNumber}
-                                        </div>
-                                        <div className="font-semibold text-white mt-2">
-                                          {t("specification")}:
-                                        </div>
-                                        <div className="space-y-1 ml-2">
-                                          {specificationParts.map(
-                                            (spec: string, index: number) => {
-                                              const [key, value] =
-                                                spec.split(":");
-                                              if (
-                                                key &&
-                                                value &&
-                                                value.trim() !== ""
-                                              ) {
-                                                const formattedKey = key
-                                                  .trim()
-                                                  .toLowerCase()
-                                                  .replace(/\s+/g, " ");
-                                                // Remove the canonical value in parentheses for display
-                                                const displayValue = value
-                                                  .trim()
-                                                  .replace(/\s*\([^)]+\)$/, "");
-                                                return (
-                                                  <div
-                                                    key={index}
-                                                    className="text-gray-600"
-                                                  >
-                                                    <span className="font-medium">
-                                                      {formattedKey}:
-                                                    </span>{" "}
-                                                    {displayValue}
-                                                  </div>
-                                                );
+                                    return (
+                                      <>
+                                        <div className="space-y-1">
+                                          <div className="font-medium">
+                                            <span className="font-semibold text-white">
+                                              {t("customer")}:
+                                            </span>{" "}
+                                            {customerName}
+                                          </div>
+                                          <div className="font-medium">
+                                            <span className="font-semibold text-white">
+                                              {t("phoneNumber")}:
+                                            </span>{" "}
+                                            <span
+                                              dir="ltr"
+                                              className="inline-block"
+                                            >
+                                              {phoneNumber}
+                                            </span>
+                                          </div>
+                                          <div className="font-semibold text-white mt-2">
+                                            {t("specification")}:
+                                          </div>
+                                          <div className="space-y-1 ml-2">
+                                            {specificationParts.map(
+                                              (spec: string, index: number) => {
+                                                const [key, value] =
+                                                  spec.split(":");
+                                                if (
+                                                  key &&
+                                                  value &&
+                                                  value.trim() !== ""
+                                                ) {
+                                                  const formattedKey = key
+                                                    .trim()
+                                                    .toLowerCase()
+                                                    .replace(/\s+/g, " ");
+                                                  // Remove the canonical value in parentheses for display
+                                                  const displayValue = value
+                                                    .trim()
+                                                    .replace(
+                                                      /\s*\([^)]+\)$/,
+                                                      ""
+                                                    );
+                                                  return (
+                                                    <div
+                                                      key={index}
+                                                      className="text-gray-600"
+                                                    >
+                                                      <span className="font-medium">
+                                                        {formattedKey}:
+                                                      </span>{" "}
+                                                      {displayValue}
+                                                    </div>
+                                                  );
+                                                }
+                                                return null;
                                               }
-                                              return null;
-                                            }
-                                          )}
+                                            )}
+                                          </div>
                                         </div>
-                                      </div>
-                                    </>
-                                  );
-                                })()
-                              ) : (
-                                // For regular products, display description as is
-                                <p className="line-clamp-2">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-left flex">
-                          <p className="font-semibold">
-                            {(item.price || 0).toFixed(2)}{" "}
-                          </p>
-                          <Currency currencyFill={currencyFill} />
+                                      </>
+                                    );
+                                  })()
+                                ) : (
+                                  // For regular products, show notice that specifications are needed
+                                  <div className="space-y-1">
+                                    <p className="line-clamp-2">
+                                      {item.description}
+                                    </p>
+                                    <div className="flex items-center gap-1 text-red-700 text-xs">
+                                      <Edit className="h-3 w-3" />
+                                      <span>
+                                        {t("specificationsNeeded", {
+                                          defaultValue: "Specifications needed",
+                                        })}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-left flex">
+                            <p className="font-semibold">
+                              {(item.price || 0).toFixed(2)}{" "}
+                            </p>
+                            <Currency currencyFill={currencyFill} />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/* Quantity Controls & Remove */}
-                    <div className="flex justify-between items-center mt-4">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => decreaseQuantity(item.id)}
-                          disabled={item.quantity <= 1}
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span className="w-8 text-center">{item.quantity}</span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => increaseQuantity(item.id)}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
+                      {/* Quantity Controls & Remove */}
+                      <div className="flex justify-between items-center mt-4">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => decreaseQuantity(item.id)}
+                            disabled={item.quantity <= 1}
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="w-8 text-center">
+                            {item.quantity}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => increaseQuantity(item.id)}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {/* Edit button for all products */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditItem(item.id)}
+                            disabled={editingItemId === item.id}
+                            className="flex items-center gap-1 text-red-600 hover:text-red-700 border-red-900 hover:border-red-700"
+                          >
+                            <Edit className="h-4 w-4" />
+                            <span className="text-xs">
+                              {item.description &&
+                              item.description.includes("Customer:")
+                                ? t("editSpecification", {
+                                    defaultValue: "Edit Specification",
+                                  })
+                                : t("addSpecification", {
+                                    defaultValue: "Add Specification",
+                                  })}
+                            </span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+
+                {/* Edit Form for All Products */}
+                {editingItemId === item.id && (
+                  <CartEditForm
+                    item={item}
+                    onSave={handleSaveEditedItem}
+                    onCancel={handleCancelEdit}
+                    product={productData}
+                  />
+                )}
+              </div>
             );
           })}
         </div>
@@ -548,15 +720,23 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
               <div className="pt-4">
-                <Link href="#">
-                  <Button
-                    className="w-full hover:bg-red-800 transition duration-300 hover:text-white"
-                    size="lg"
-                    onClick={handleCheckout}
-                  >
-                    {t("completeOrder")}
-                  </Button>
-                </Link>
+                <Button
+                  className="w-full hover:bg-red-800 transition duration-300 hover:text-white"
+                  size="lg"
+                  onClick={handleCheckout}
+                  disabled={cartProducts.length === 0 || checkoutLoading}
+                >
+                  {checkoutLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      {t("processingOrder", {
+                        defaultValue: "Processing Order...",
+                      })}
+                    </div>
+                  ) : (
+                    t("completeOrder")
+                  )}
+                </Button>
               </div>
             </div>
           </Card>

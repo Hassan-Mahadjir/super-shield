@@ -14,9 +14,9 @@ type ProductImagesProps = {
 };
 
 const defaultImages = [
-  { id: 1, src: "/hero.png", alt: "Product Image 1" },
-  { id: 2, src: "/hero-blue.png", alt: "Product Image 2" },
-  { id: 3, src: "/hero-red.png", alt: "Product Image 3" },
+  { id: 1, src: "/lucid-car-gpt.png", alt: "Product Image 1" },
+  { id: 2, src: "/lucid-car-gpt.png", alt: "Product Image 2" },
+  { id: 3, src: "/lucid-car-gpt.png", alt: "Product Image 3" },
 ];
 
 const ProductImages = ({ images }: ProductImagesProps) => {
@@ -54,23 +54,30 @@ const ProductImages = ({ images }: ProductImagesProps) => {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto px-4">
       {/* Main Swiper Viewer */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[5/3]">
+      <div className="relative w-full max-w-2xl mx-auto aspect-[4/3] sm:aspect-[3/2] md:aspect-[5/3] overflow-hidden">
         <Swiper
           modules={[Navigation, Pagination]}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           onSlideChange={(swiper) => setIndex(swiper.activeIndex)}
-          spaceBetween={10}
+          spaceBetween={0}
           slidesPerView={1}
-          navigation
-          pagination={{ clickable: true }}
-          className="w-full h-full "
+          navigation={{
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          }}
+          pagination={{
+            clickable: true,
+            el: ".swiper-pagination",
+          }}
+          className="w-full h-full"
+          style={{ maxWidth: "85vw" }}
         >
           {normalizedImages.map((img) => (
-            <SwiperSlide key={img.id}>
+            <SwiperSlide key={img.id} className="w-full h-full">
               <div
-                className="relative w-full h-full cursor-pointer"
+                className="relative w-full h-full cursor-pointer flex items-center justify-center"
                 onClick={() => handleImageClick(img)}
               >
                 <Image
@@ -78,15 +85,23 @@ const ProductImages = ({ images }: ProductImagesProps) => {
                   alt={img.alt}
                   fill
                   className="object-contain rounded-md hover:scale-105 transition-transform duration-200"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {/* Custom Navigation Buttons */}
+        <div className="swiper-button-prev !text-red-500 !bg-black/30 !w-10 !h-10 !rounded-full !flex !items-center !justify-center hover:!bg-black/50 transition-all" />
+        <div className="swiper-button-next !text-red-500 !bg-black/30 !w-10 !h-10 !rounded-full !flex !items-center !justify-center hover:!bg-black/50 transition-all" />
+
+        {/* Custom Pagination */}
+        <div className="swiper-pagination !bottom-4" />
       </div>
 
       {/* Thumbnail Selector */}
-      <div className="flex flex-wrap justify-center gap-3 mt-6">
+      <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-2xl mx-auto">
         {normalizedImages.map((img, idx) => (
           <div
             key={img.id}
@@ -94,15 +109,18 @@ const ProductImages = ({ images }: ProductImagesProps) => {
               swiperRef.current?.slideTo(idx);
               setIndex(idx);
             }}
-            className={`relative aspect-[1/1] w-[22%] sm:w-[18%] md:w-[15%] cursor-pointer rounded-md border-2 ${
-              index === idx ? "border-black" : "border-transparent"
+            className={`relative aspect-square w-16 sm:w-20 md:w-24 cursor-pointer rounded-md border-2 transition-all hover:scale-105 ${
+              index === idx
+                ? "border-red-500 shadow-lg"
+                : "border-gray-300 hover:border-gray-400"
             }`}
           >
             <Image
               src={img.src}
               alt={img.alt}
               fill
-              className="object-contain rounded-md"
+              className="object-cover rounded-md"
+              sizes="64px"
             />
           </div>
         ))}
@@ -111,24 +129,25 @@ const ProductImages = ({ images }: ProductImagesProps) => {
       {/* Modal for enlarged image */}
       {isModalOpen && selectedImage && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
           onClick={closeModal}
         >
-          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
+          <div className="relative max-w-5xl max-h-[95vh] w-full h-full flex items-center justify-center">
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4 text-white text-2xl font-bold bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition-all z-10"
+              className="absolute top-4 right-4 text-white text-2xl font-bold bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/75 transition-all z-10"
             >
               ×
             </button>
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center p-4">
               <Image
                 src={selectedImage.src}
                 alt={selectedImage.alt}
-                width={800}
-                height={600}
-                className="max-w-full max-h-full object-contain rounded-lg"
+                width={1200}
+                height={800}
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
+                priority
               />
             </div>
           </div>

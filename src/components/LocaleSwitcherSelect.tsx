@@ -30,8 +30,11 @@ export default function LocaleSwitcherSelect({
     const storedLocale = localStorage.getItem("locale");
     if (storedLocale && storedLocale !== selectedLocale) {
       setSelectedLocale(storedLocale);
+    } else if (!storedLocale && defaultValue !== selectedLocale) {
+      // If no stored preference, use the provided default value (should be Arabic)
+      setSelectedLocale(defaultValue);
     }
-  }, [selectedLocale]);
+  }, [selectedLocale, defaultValue]);
 
   const handleValueChange = (newLocale: string) => {
     setSelectedLocale(newLocale);

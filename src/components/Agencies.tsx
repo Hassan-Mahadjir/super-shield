@@ -9,7 +9,7 @@ const Agencies = () => {
   return (
     <div>
       <div className="mt-5 mx-5">
-        <TypingAnimation className="text-center my-5 font-bold text-4xl mt-10">
+        <TypingAnimation className="text-center my-5 font-bold text-3xl mt-10">
           {t("agencies")}
         </TypingAnimation>
         <div className="overflow-hidden w-full py-8">

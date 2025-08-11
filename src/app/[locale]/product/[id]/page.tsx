@@ -47,8 +47,8 @@ const ProductPage = ({
   if (!product) return <ProductPageSkeleton />;
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
-      <div className="grid lg:grid-cols-3 gap-8">
+    <div className="mx-auto px-4 py-8">
+      <div className="grid lg:grid-cols-3 gap-4 lg:gap-8">
         {/* photo gallery */}
         <div className="lg:col-span-1 space-y-4">
           <div className="lg:sticky top-24">

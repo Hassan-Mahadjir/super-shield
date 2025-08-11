@@ -6,7 +6,7 @@
     "author": "Super Shield",
     "ogTitle": "Super Shield - Premium Car Heat Insulator",
     "ogDescription": "The first thermal shield designed specifically for Saudi Arabia's extreme heat. Join over 300,000 satisfied customers.",
-    "ogImage": "/super.png"
+    "ogImage": "/logo.png"
   },
   "Toggle": {
     "dark": "Dark",
@@ -27,7 +27,7 @@
     "logo": "Super Shield"
   },
   "Footer": {
-    "tagline": "Locally made and tested under the sun — the first thermal shield designed specifically for Saudi Arabia’s extreme heat. Join over 300,000 satisfied customers enjoying coolness and protection.",
+    "tagline": "Choose comfort and confidence, and join us to enjoy a thermal shield that exceeds expectations... cooling your summer and protecting you from the blazing sun.",
     "logoTitle": "Super Shield",
     "logoAlt": "Super Shield Logo",
     "customerService": "Customer Service",
@@ -95,6 +95,9 @@
     "customers": "Customer Reviews",
     "sellMore": "More than sold",
     "addToCart": "Add to Cart",
+    "customizeOrder": "Customize Order",
+    "specificationRequired": "Specifications required",
+    "specificationsNeeded": "Specifications needed",
     "nooffer": "No offers available at the moment",
     "noProducts": "No products available in this language."
   },
@@ -124,9 +127,14 @@
     "customer": "Customer",
     "phoneNumber": "Phone Number",
     "specification": "Details",
+    "specificationsNeeded": "Specifications needed",
     "orderReceived": "Order received successfully!",
     "orderProcessing": "Your order is being processed.",
-    "orderError": "Failed to process the order. Please try again."
+    "orderError": "Failed to process the order. Please try again.",
+    "itemUpdated": "Item updated successfully!",
+    "editSpecification": "Edit Specification",
+    "addSpecification": "Add Specification",
+    "processingOrder": "Processing Order..."
   },
   "form": {
     "name": "Full Name",
@@ -163,7 +171,10 @@
     "yes": "Yes",
     "no": "No",
     "yesorno": "Yes (if applicable)",
-    "yesornoElec": "Enter Yes or No"
+    "yesornoElec": "Enter Yes or No",
+    "editSpecification": "Edit Specification",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel"
   },
   "frontWindowOptions": {
     "transparent": "Transparent (Traffic Approved)",
@@ -225,5 +236,8 @@
     "contactSoon": "We will contact you soon to schedule your appointment.",
     "noReply": "This is an automated message. Please do not reply.",
     "confirmemail": "Order Received"
+  },
+  "MovingText": {
+    "bestWindowShield": "Multiple layers of insulation to protect you from the sun's heat"
   }
 }

@@ -65,7 +65,7 @@ const Offer = () => {
       product.name,
       product.images && product.images.length > 0
         ? product.images[0]
-        : "/hero.png",
+        : "/lucid-car-gpt.png",
       product.description,
       1
     );
@@ -90,7 +90,7 @@ const Offer = () => {
                     src={
                       product.images && product.images.length > 0
                         ? product.images[0]
-                        : "/hero.png"
+                        : "/lucid-car-gpt.png"
                     }
                     alt={product.name}
                     width={300}

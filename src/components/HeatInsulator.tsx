@@ -82,11 +82,11 @@ const HeatInsulator = () => {
         {filteredProducts.map((product: Product, idx: number) => (
           <Card
             key={product.id || idx}
-            className="p-0 max-w-xs w-full shadow-none border-none"
+            className="p-0 max-w-xs w-full shadow-none border-red-800"
           >
             <MagicCard
-              gradientColor={theme === "dark" ? "#262626" : "#D9D9D955"}
-              className="p-0"
+              gradientColor={theme === "dark" ? "#7D0A0A" : "#7D0A0A"}
+              className="p-0 "
             >
               <CardHeader className="border-b border-border p-4 [.border-b]:pb-4 relative">
                 <Link href={`/product/${product.id}`}>
@@ -94,7 +94,7 @@ const HeatInsulator = () => {
                     src={
                       product.images && product.images.length > 0
                         ? product.images[0]
-                        : "/hero.png"
+                        : "/lucid-car-gpt.png"
                     }
                     alt={product.name}
                     width={300}

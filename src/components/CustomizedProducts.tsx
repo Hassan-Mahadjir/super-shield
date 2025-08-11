@@ -245,7 +245,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
 
   // Generate car years from 1990 to current year
   const currentYear = new Date().getFullYear();
-  const carYears = Array.from({ length: currentYear - 1989 }, (_, i) =>
+  const carYears = Array.from({ length: currentYear - 1989 + 1 }, (_, i) =>
     (1990 + i).toString()
   ).reverse();
 
@@ -335,18 +335,22 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       const name = `${make} ${model} (${type})`;
 
       // Translate the canonical values for display in description
-      const frontDisplay = tFrontWindowOptions(
-        values.front as keyof typeof tFrontWindowOptions.raw
-      );
-      const backDisplay = tBackWindowOptions(
-        values.back as keyof typeof tBackWindowOptions.raw
-      );
-      const sidesfrontDisplay = tSidesWindowOptions(
-        values.sidesfront as keyof typeof tSidesWindowOptions.raw
-      );
-      const sidesbackDisplay = tSidesWindowOptions(
-        values.sidesback as keyof typeof tSidesWindowOptions.raw
-      );
+      const frontDisplay =
+        tFrontWindowOptions(
+          values.front as keyof typeof tFrontWindowOptions.raw
+        ) || values.front;
+      const backDisplay =
+        tBackWindowOptions(
+          values.back as keyof typeof tBackWindowOptions.raw
+        ) || values.back;
+      const sidesfrontDisplay =
+        tSidesWindowOptions(
+          values.sidesfront as keyof typeof tSidesWindowOptions.raw
+        ) || values.sidesfront;
+      const sidesbackDisplay =
+        tSidesWindowOptions(
+          values.sidesback as keyof typeof tSidesWindowOptions.raw
+        ) || values.sidesback;
       const thirdDisplay = values.third === "yes" ? t("yes") : t("no");
       const extraDisplay = values.extra === "yes" ? t("yes") : t("no");
 
@@ -374,7 +378,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
       const image =
         product?.images && product.images.length > 0
           ? product.images[0]
-          : "/hero.png";
+          : "/lucid-car-gpt.png";
       const old_price = product?.old_price ?? undefined;
       addToCart(id, price, name, image, description, 1, old_price);
 
@@ -483,7 +487,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                   <FormLabel className="w-1/6">{t("name")}</FormLabel>
                   <FormControl>
                     <Input
-                      className="w-3/4"
+                      className="w-3/4 placeholder:text-sm"
                       placeholder={t("namePlaceholder")}
                       {...field}
                     />
@@ -502,6 +506,22 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                   <FormLabel className="w-1/6">{t("phone")}</FormLabel>
                   <FormControl>
                     <div className="flex w-3/4 gap-2">
+                      <Input
+                        className="w-2/3 placeholder:text-sm"
+                        placeholder={t("phonePlaceholder")}
+                        value={formatPhoneNumber(phoneNumber)}
+                        onChange={(e) => {
+                          // Remove formatting for storage
+                          const rawValue = e.target.value.replace(/[-\s]/g, "");
+                          setPhoneNumber(rawValue);
+                          field.onChange(selectedCountryCode + "-" + rawValue);
+                        }}
+                        onBlur={(e) => {
+                          // Format on blur for better UX
+                          const rawValue = e.target.value.replace(/[-\s]/g, "");
+                          setPhoneNumber(rawValue);
+                        }}
+                      />
                       <Select
                         value={selectedCountryCode}
                         onValueChange={(value) => {
@@ -524,22 +544,6 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Input
-                        className="w-2/3"
-                        placeholder={t("phonePlaceholder")}
-                        value={formatPhoneNumber(phoneNumber)}
-                        onChange={(e) => {
-                          // Remove formatting for storage
-                          const rawValue = e.target.value.replace(/[-\s]/g, "");
-                          setPhoneNumber(rawValue);
-                          field.onChange(selectedCountryCode + "-" + rawValue);
-                        }}
-                        onBlur={(e) => {
-                          // Format on blur for better UX
-                          const rawValue = e.target.value.replace(/[-\s]/g, "");
-                          setPhoneNumber(rawValue);
-                        }}
-                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -555,7 +559,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                   <FormLabel className="w-1/6">{t("carMake")}</FormLabel>
                   <FormControl>
                     <Input
-                      className="w-3/4"
+                      className="w-3/4 placeholder:text-sm"
                       placeholder={t("carMakePlaceholder")}
                       {...field}
                     />
@@ -573,7 +577,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                   <FormLabel className="w-1/6">{t("carType")}</FormLabel>
                   <FormControl>
                     <Input
-                      className="w-3/4"
+                      className="w-3/4 placeholder:text-sm"
                       placeholder={t("carTypePlaceholder")}
                       {...field}
                     />
@@ -616,7 +620,7 @@ const CustomizedProducts = ({ product }: { product?: Product }) => {
                   </FormControl>
                   {selectedModel === "other" && (
                     <Input
-                      className="w-3/4"
+                      className="w-3/4 placeholder:text-sm"
                       placeholder={t("carModelPlaceholder")}
                       value={customModel}
                       onChange={(e) => setCustomModel(e.target.value)}

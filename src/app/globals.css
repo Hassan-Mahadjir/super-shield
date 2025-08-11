@@ -129,12 +129,28 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Prevent zoom on input focus on mobile */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
 
 /* Swiper Navigation Arrows and Pagination Styles */
 .swiper-button-next,
 .swiper-button-prev {
   color: rgb(212, 1, 1) !important;
+}
+
+/* Prevent zoom on Swiper components */
+.swiper {
+  touch-action: pan-y pinch-zoom;
+}
+
+.swiper-slide {
+  touch-action: pan-y pinch-zoom;
 }
 
 .swiper-button-next:hover,
@@ -188,4 +204,53 @@
 .animate-gradient-move {
   background-size: 300% 300%;
   animation: gradient-move 6s ease infinite;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-rtl {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-scroll-rtl {
+  animation: scroll-rtl 30s linear infinite;
+  will-change: transform;
+}
+
+/* Responsive animations for MovingText component */
+@media (max-width: 768px) {
+  .moving-text-responsive.animate-scroll {
+    animation: scroll 8s linear infinite;
+  }
+
+  .moving-text-responsive.animate-scroll-rtl {
+    animation: scroll-rtl 8s linear infinite;
+  }
+}
+
+@media (max-width: 480px) {
+  .moving-text-responsive.animate-scroll {
+    animation: scroll 5s linear infinite;
+  }
+
+  .moving-text-responsive.animate-scroll-rtl {
+    animation: scroll-rtl 5s linear infinite;
+  }
 }

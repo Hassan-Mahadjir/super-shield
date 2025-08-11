@@ -13,18 +13,21 @@ export default function LocaleSwitcher({
   width = "w-32",
 }: LocaleSwitcherProps) {
   const locale: string = useLocale();
-  const [defaultLocale, setDefaultLocale] = useState(locale);
+  const [defaultLocale, setDefaultLocale] = useState(routing.defaultLocale);
 
   useEffect(() => {
     const storedLocale = localStorage.getItem("locale");
     if (storedLocale && storedLocale !== defaultLocale) {
-      setDefaultLocale(storedLocale);
+      setDefaultLocale(storedLocale as "en" | "ar");
+    } else if (!storedLocale) {
+      // If no stored preference, use Arabic as default
+      setDefaultLocale(routing.defaultLocale);
     }
   }, [locale, defaultLocale]);
 
   const languageNames: Record<string, { en: string; ar: string }> = {
-    en: { en: "English", ar: "الإنجليزية" },
     ar: { en: "Arabic", ar: "العربية" },
+    en: { en: "English", ar: "الإنجليزية" },
   };
 
   return (
